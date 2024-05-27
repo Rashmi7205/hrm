@@ -19,3 +19,11 @@ export const JOB_FOR_ENUM ={
     PERSON_WITH_DISABILITY:"person_with_disability",
     EXPERIENCED:"experienced"
 }
+export const APPLICATION_STATUS = {
+    NEW:"new",
+    REVIEWD:"reviewd",
+    INTVIEW1:"intview1",
+    INTVIEW2:"intview2",
+    OFFER:"offer",
+    ONBOARD:"onboard",
+}
