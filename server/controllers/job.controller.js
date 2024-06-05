@@ -5,15 +5,51 @@ import ServerError from '../utils/server.error.js';
 const getAllJobs = async (req, res,next) => {
     try {
         let {limit,offset} = req.params;
+      
         if(!limit){
-            limit = 5;
+            limit = 50;
             offset = 0;
         }
-        const jobs = await Job.find().limit(limit).skip(offset);
+        let searchObj = {};
+        if(req?.body?.search){
+            const search = req.body.search;
+            const {titles,locations,work_exps,dept_names} = search;
+            if(search?.titles?.length){
+                    searchObj = {
+                        ...searchObj,
+                        title:{$in:titles}
+                 }
+                }
+                if(search?.locations?.length){
+                    searchObj = {
+                        ...searchObj,
+                        location:{$in:locations}
+                        }
+                }
+                if(search?.work_exps?.length){
+                    searchObj = {
+                        ...searchObj,
+                        work_exp:{$in:work_exps}
+                        }
+                }
+                if(search?.dept_names?.length){
+                    searchObj = {
+                        ...searchObj,
+                        dept_name:{$in:dept_names}
+                        }
+                }
+
+        }
+
+        const jobs = await Job.find(
+            searchObj
+        ).limit(limit).skip(offset);
         if(!jobs){
           return next(new ServerError('No jobs found', 404));
         }
-        res.status(200).json({jobs});
+        res.status(200).json({
+            count:jobs.length,
+            jobs});
     } catch (error) {
         next(new ServerError("Internal Server Error" + error.message, 501));
     }
@@ -168,10 +204,43 @@ const deleteJob = async (req, res,next) => {
     }
 }
 
+const getJobFilters = async(req,res,next)=>{
+    try {
+        const jobFilterOptions = await Job.aggregate([
+            {
+              $group: {
+                _id: null,
+                titles: { $addToSet: "$title" },
+                work_exps: { $addToSet: "$work_exp" },
+                locations: { $addToSet: "$location" },
+                dept_names: { $addToSet: "$dept_name" }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                titles: 1,
+                work_exps: 1,
+                locations: 1,
+                dept_names: 1
+              }
+            }
+          ]) ;
+          res.status(200).json({
+            success:true,
+            message:"Job filters fetched successfully",
+            jobFilterOptions
+          });
+    } catch (error) {
+        next(new ServerError("Internal Server Error",400));
+    }
+}
+
 export {
     getAllJobs,
     getJobById,
     createJob,
     updateJob,
     deleteJob,
+    getJobFilters
 }

@@ -8,7 +8,7 @@ const EmployeeSchema = new Schema({
     phone_number: { type: String, required: true },
     email: { type: String, required: true },
     passport_no: { type: String },
-    passport_exp_no: { type: Date,},
+    passport_exp_date: { type: Date,},
     dob: { type: Date, required: true },
     documents: { type: [String], },
     bank_info: { type: [mongoose.Schema.Types.ObjectId], ref: 'BankInfo',},

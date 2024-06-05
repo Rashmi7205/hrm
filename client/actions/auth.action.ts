@@ -11,7 +11,7 @@ interface  UserInfo{
 export const getUserInfo = async(userData:UserInfo)=>{
     try {
         const response = await fetch(`${process.env.SERVER_API_URL}/auth/`,{
-            method:'POST',
+            method:'POST',            
             body:JSON.stringify(userData)
         });
         const data = await response.json();
