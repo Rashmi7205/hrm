@@ -25,16 +25,18 @@ import {
 } from "@/components/ui/table"
 import { Input } from "./ui/input";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { JobDetails } from "@/app/(root)/vacancies/columns";
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
+// export type Payment = {
+//   id: string;
+//   amount: number;
+//   status: "pending" | "processing" | "success" | "failed";
+//   email: string;
+// };
 
 
-export function DataTableDemo({data,columns,}:{data:Payment[],columns:ColumnDef<Payment>[]}) {
+export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnDef<JobDetails>[]}) {
+  
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -67,9 +69,9 @@ export function DataTableDemo({data,columns,}:{data:Payment[],columns:ColumnDef<
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("contactEmail")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("contactEmail")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -100,11 +102,11 @@ export function DataTableDemo({data,columns,}:{data:Payment[],columns:ColumnDef<
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
+      <div className="rounded-md">
+        <Table className="flex flex-col gap-3 border-none">
+          <TableHeader className="rounded-md lg:w-full">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="w-full flex  justify-around  items-center">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -120,12 +122,13 @@ export function DataTableDemo({data,columns,}:{data:Payment[],columns:ColumnDef<
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="border-2 rounded-lg">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="w-full flex item-start justify-around"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

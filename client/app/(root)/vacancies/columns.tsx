@@ -12,148 +12,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getAllVacancies } from "@/actions/jobs/job.actions";
+import { Badge } from "@/components/ui/badge"
 
-const getValues = async ()=>{
-    await getAllVacancies();
-}
-getValues();
 
-export const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-];
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+export interface JobDetails {
+  salary: {
+      currency: string;
+      amount: string;
+      per_time: string;
+  };
+  contact: {
+      email: string;
+      phone: string;
+      contact_person: string;
+  };
+  _id: string;
+  title: string;
+  job_desc: string;
+  location: string;
+  status: string;
+  dept_name: string;
+  work_exp: string;
+  skills_req: string[];
+  employement_type: string;
+  opening_date: string;
+  closing_date: string;
+  education: string;
+  job_suitable_for: string[];
+  responsibility: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };
 
-
-
-
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<JobDetails>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -177,39 +69,87 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "title",
+    header:  ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Position Title
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div>{row.getValue("title")}</div>
+    ),
+  },
+  {
+    accessorKey: "location",
+    header:  ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Location
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div>{row.getValue("location")}</div>
     ),
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    cell: ({ row }) => {
+      const status :string = row.getValue("status"); 
+      switch(status.toLowerCase()){
+        case "completed":
+            return (<Badge variant="outline" className="bg-green-300 font-medium py-1">{status}</Badge>)
+       case "inprogress":
+            return (<Badge variant="outline" className="bg-red-300 font-medium">{status}</Badge>)
+      case "active":
+              return (<Badge variant="outline" className="bg-yellow-300 font-medium">{status}</Badge>)
+        default:
+          return (<Badge variant="outline">{status}</Badge>)
+      } 
+    },
   },
   {
-    accessorKey: "email",
+    accessorFn:(row)=>row.createdAt,
+    id:"publication",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Publication
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => {
+      const date:string = row.getValue("publication");
+      const dateObj = new Date(date);
+      const publication = dateObj.toLocaleDateString('en-In',{
+        year:'numeric',
+        month:"short",
+        day:"numeric"
+      })
+      return (<div className="lowercase">{publication}</div>)
+    },
   },
   {
-    accessorKey: "amount",
+    accessorFn:(row)=>row.salary.amount,
+    id:"salaryAmount",
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
+      const amount = parseFloat(row.getValue("salaryAmount"));
 
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
@@ -223,9 +163,9 @@ export const columns: ColumnDef<Payment>[] = [
   {
     id: "actions",
     enableHiding: false,
+    header:"Actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
+      const job = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -237,17 +177,16 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(job._id)}
             >
-              Copy payment ID
+              Copy Job ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View Job Details</DropdownMenuItem>
+            <DropdownMenuItem>View Department</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
 ];
-
