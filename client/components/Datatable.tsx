@@ -68,10 +68,10 @@ export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnD
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("contactEmail")?.getFilterValue() as string) ?? ""}
+          placeholder="Search By title..."
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("contactEmail")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -103,10 +103,10 @@ export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnD
         </DropdownMenu>
       </div>
       <div className="rounded-md">
-        <Table className="flex flex-col gap-3 border-none">
-          <TableHeader className="rounded-md lg:w-full">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="w-full flex  justify-around  items-center">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -128,7 +128,7 @@ export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnD
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="w-full flex item-start justify-around"
+                 
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

@@ -21,7 +21,7 @@ const Sidebar = () => {
             <p className='text-3xl font-extrabold'>HRM</p>
             <p>{user && user.firstName}</p>
         </div>
-        <ul>
+        <ul className='text-xs'>
             {
                 sideBarLinks.map((link)=>(<Link 
                 className={`flex my-5 gap-4 px-4 py-3 rounded-full font-medium ${link.link === pathname?'bg-slate-700':''} `}

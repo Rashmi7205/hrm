@@ -1,5 +1,6 @@
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import { ThemeBtn } from "./ThemeBtn";
 
 const NavBar = () => {
   const now = new Date();
@@ -29,6 +30,7 @@ const NavBar = () => {
         <span>
           {time}
         </span>
+        <ThemeBtn/>
       </div>
     </nav>
   );

@@ -2,7 +2,7 @@
 import * as React from "react";
 import {ColumnDef} from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Calendar, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -94,7 +94,7 @@ export const columns: ColumnDef<JobDetails>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Location
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />  
         </Button>
       );
     },
@@ -141,7 +141,11 @@ export const columns: ColumnDef<JobDetails>[] = [
         month:"short",
         day:"numeric"
       })
-      return (<div className="lowercase">{publication}</div>)
+      return (<div className="lowercase flex items-center gap-1">
+          <Calendar size={14} className="text-slate-400"/>
+          {publication}
+          </div>
+        );
     },
   },
   {
