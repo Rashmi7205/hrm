@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import {ColumnDef} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Calendar, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,19 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge"
-
+import { Badge } from "@/components/ui/badge";
 
 export interface JobDetails {
   salary: {
-      currency: string;
-      amount: string;
-      per_time: string;
+    currency: string;
+    amount: string;
+    per_time: string;
   };
   contact: {
-      email: string;
-      phone: string;
-      contact_person: string;
+    email: string;
+    phone: string;
+    contact_person: string;
   };
   _id: string;
   title: string;
@@ -43,7 +42,7 @@ export interface JobDetails {
   createdAt: string;
   updatedAt: string;
   __v: number;
-};
+}
 
 export const columns: ColumnDef<JobDetails>[] = [
   {
@@ -70,7 +69,7 @@ export const columns: ColumnDef<JobDetails>[] = [
   },
   {
     accessorKey: "title",
-    header:  ({ column }) => {
+    header: ({ column }) => {
       return (
         <Button
           variant="ghost"
@@ -81,47 +80,73 @@ export const columns: ColumnDef<JobDetails>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div>{row.getValue("title")}</div>
-    ),
+    cell: ({ row }) => <div>{row.getValue("title")}</div>,
   },
   {
     accessorKey: "location",
-    header:  ({ column }) => {
+    header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Location
-          <ArrowUpDown className="ml-2 h-4 w-4" />  
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div>{row.getValue("location")}</div>
-    ),
+    cell: ({ row }) => <div>{row.getValue("location")}</div>,
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status :string = row.getValue("status"); 
-      switch(status.toLowerCase()){
+      const status: string = row.getValue("status");
+      switch (status.toLowerCase()) {
         case "completed":
-            return (<Badge variant="outline" className="bg-green-300 font-medium py-1">{status}</Badge>)
-       case "inprogress":
-            return (<Badge variant="outline" className="bg-red-300 font-medium">{status}</Badge>)
-      case "active":
-              return (<Badge variant="outline" className="bg-yellow-300 font-medium">{status}</Badge>)
+          return (
+            <Badge
+              variant="outline"
+              className="bg-green-200 font-medium py-1 text-green-700"
+            >
+              {status}
+            </Badge>
+          );
+        case "inprogress":
+          return (
+            <Badge
+              variant="outline"
+              className="bg-orange-200 font-medium py-1 text-orange-700"
+            >
+              {status}
+            </Badge>
+          );
+        case "active":
+          return (
+            <Badge
+              variant="outline"
+              className="bg-yellow-300 font-medium py-1 text-yellow-700"
+            >
+              {status}
+            </Badge>
+          );
+        case "pending":
+          return (
+            <Badge
+              variant="outline"
+              className="bg-red-300 font-medium py-1 text-red-700"
+            >
+              {status}
+            </Badge>
+          );
         default:
-          return (<Badge variant="outline">{status}</Badge>)
-      } 
+          return <Badge variant="outline">{status}</Badge>;
+      }
     },
   },
   {
-    accessorFn:(row)=>row.createdAt,
-    id:"publication",
+    accessorFn: (row) => row.createdAt,
+    id: "publication",
     header: ({ column }) => {
       return (
         <Button
@@ -134,23 +159,24 @@ export const columns: ColumnDef<JobDetails>[] = [
       );
     },
     cell: ({ row }) => {
-      const date:string = row.getValue("publication");
+      const date: string = row.getValue("publication");
       const dateObj = new Date(date);
-      const publication = dateObj.toLocaleDateString('en-In',{
-        year:'numeric',
-        month:"short",
-        day:"numeric"
-      })
-      return (<div className="lowercase flex items-center gap-1">
-          <Calendar size={14} className="text-slate-400"/>
+      const publication = dateObj.toLocaleDateString("en-In", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      return (
+        <div className="lowercase flex items-center gap-1">
+          <Calendar size={14} className="text-slate-400" />
           {publication}
-          </div>
-        );
+        </div>
+      );
     },
   },
   {
-    accessorFn:(row)=>row.salary.amount,
-    id:"salaryAmount",
+    accessorFn: (row) => row.salary.amount,
+    id: "salaryAmount",
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("salaryAmount"));
@@ -167,7 +193,7 @@ export const columns: ColumnDef<JobDetails>[] = [
   {
     id: "actions",
     enableHiding: false,
-    header:"Actions",
+    header: "Actions",
     cell: ({ row }) => {
       const job = row.original;
       return (

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlignLeftIcon, Download, LayoutGrid, Plus } from 'lucide-react';
 import JobFilters from '@/app/components/JobFilters';
+import VacCard from '@/app/components/VacCard';
 
 const page = () => {
   const [data, setData] = useState<JobDetails[]|null>(null);
@@ -17,7 +18,7 @@ const page = () => {
   const [view, setView] = useState<string|null>("list");
   useEffect(()=>{
     getJobData();
-  },[]);
+  },[view]);
 
   const statusList = [
     'All Vacancies',  
@@ -83,8 +84,9 @@ const page = () => {
             </div>
         </section>
         <div className='overflow-y-hidden h-4/5 flex flex-row items-start justify-around gap-1'>
-          <div className='lg:w-4/5'>
-            {data && (<DataTableDemo data={data} columns={columns}/>)}
+          <div className='lg:w-4/5 flex flex-wrap gap-2 items-center justify-around my-3'>
+            {/* {data && (<DataTableDemo data={data} columns={columns}/>)} */}
+            {data && (data.map((item)=><VacCard data={item}/>))}
           </div>
           <div className='lg:w-1/5'>
             <JobFilters/>

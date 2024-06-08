@@ -122,7 +122,7 @@ export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnD
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="border-2 rounded-lg">
+          <TableBody className="border rounded-xl shadow-md">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
