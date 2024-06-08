@@ -1,15 +1,48 @@
 import ServerError from '../utils/server.error.js';
 import Employee, { BankInfo } from '../schemas/employee.schema.js';
-const getAllEmployees = async(req, res)=> {
+const getAllEmployees = async(req, res,next)=> {
     try {
-        
+        const {search} = req.body;
+        let {limit,skip} = req.body;
+        if(!limit || !skip){
+            limit  = 50;
+            skip = 0;
+        }
+        if(search){
+            const empList = await Employee.find({
+                $or:[
+                    {name:{$in:search}},
+                    {position:{$in:search}},
+                    {email:{$in:search}},
+                    {dept_name:{$in:search}}
+                ]
+            }).limit(limit).skip(skip);
+            return res.status(200).json({
+                empList
+            });
+        }else{
+            const empList = await Employee.find({}).limit(limit).skip(skip);
+            return res.status(200).json({
+                empList
+            });
+        }   
     } catch (error) {
         next(new ServerError("Internal Server Error",501));
     }
  }
-const getEmployeeById = async(req, res)=> {
+const getEmployeeById = async(req, res,next)=> {
     try {
-       
+       const {id }  = req.params;
+       if(!id){
+        return next(new ServerError("Id is missing | Emp id is required",402));
+       }
+       const emp = await Employee.findById(id);
+       if(!emp){
+        return next(new ServerError("Cannot Find Employee",400));
+       }
+       res.status(200).json({
+            emp
+       });
     } catch (error) {
         next(new ServerError("Internal Server Error",501));
     }
