@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { APPLICATION_STATUS } from '../constansts.js';
 const ApplicantsSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    job_id: { type: String, ref: 'Job', required: true },
+    job_id: { type: Schema.Types.ObjectId, ref: 'Job', required: true },
     status: {
         type: String,
         enum: APPLICATION_STATUS,
