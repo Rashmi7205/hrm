@@ -4,22 +4,15 @@ import ServerError from '../utils/server.error.js';
 
 const getAllJobs = async (req, res, next) => {
     try {
-        let { limit, offset } = req.params;
+        let { limit, skip } = req.params;
         if (!limit) {
             limit = 50;
-            offset = 0;
+            skip = 0;
         }
-        const { search } = req.body;
+        const { search,status} = req.body;
+
         if (search) {
-            // const jobs = await Job.find({
-            //     $or: [
-            //         { dept_name: { $in: search } },
-            //         { work_exp: { $in: search } },
-            //         { location: { $in: search } },
-            //         { title: { $in: search } }
-            //     ]
-            // }).limit(limit).skip(offset);
-            const jobs = await Job.aggregate([
+            const jobs = await Job.aggregate([ 
                 {
                     $match: {
                         $or: [
@@ -28,7 +21,7 @@ const getAllJobs = async (req, res, next) => {
                             { location: { $in: search } },
                             { work_exp: { $in: search } }
                         ]
-                    }
+                    },
                 },
                 {
                     $lookup: {
@@ -37,6 +30,11 @@ const getAllJobs = async (req, res, next) => {
                         foreignField: "job_id",
                         as: "applicants"
                     },
+                },
+                {
+                    $match:{
+                        status:status
+                    }
                 },
                 {
                     $sort: {

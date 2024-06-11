@@ -12,7 +12,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
             <div className="w-full px-5 py-4 ">
                 <NavBar/>
             </div>
-            <section className="w-full px-5 py-8 overflow-y-auto">
+            <section className="w-full px-5 py-2 overflow-y-auto">
                 {children}
             </section>
         </div>

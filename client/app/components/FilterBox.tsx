@@ -7,9 +7,9 @@ const FilterBox = ({
   onclick
 }: {
   title: string;
-  list: [string];
-  search: [string];
-  onclick?:()=>{}
+  list: string[];
+  search: string[];
+  onclick?:(e:any)=>void
 }) => {
   return (
     <div className="w-full py-1 px-2 ">

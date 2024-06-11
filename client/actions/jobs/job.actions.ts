@@ -1,10 +1,14 @@
 import axios from "axios";
 
-export const getAllVacancies = async () => {
+export const getAllVacancies = async (status:string|string[],search?:string[]) => {
   try {
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL!}/jobs/all/`
-    );
+    if(!status || status==="All Vacancies"){
+        status  =["active","pending","inproggress"]
+    }
+    const { data } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_API_URL!}/jobs/all/`,{
+        status,
+        search
+    });
     return data;
   } catch (error) {
     console.log(error);

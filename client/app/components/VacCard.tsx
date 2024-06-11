@@ -1,14 +1,13 @@
-import React from "react";
-import { JobDetails } from "../(root)/vacancies/columns";
 import { Badge } from "@/components/ui/badge";
 import { BriefcaseBusiness, CalendarRange, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { JobDetails } from "@/types";
 
-const VacCard = ({ data }: JobDetails) => {
+const VacCard = ({ data }: {data:JobDetails}) => {
   return (
-    <div className="p-5 flex flex-col gap-3 bg-slate-100 items-center w-[300px] rounded-lg shadow-lg">
-      <div className="flex flex-row gap-1">
-        <BriefcaseBusiness className="bg-slate-200 p-1 rounded-md" />
+    <div className="p-5 flex flex-col gap-3 bg-slate-100 items-center w-[300px] rounded-lg shadow-lg dark:bg-slate-800">
+      <div className="flex flex-row justify-between w-full">
+        <BriefcaseBusiness className="bg-slate-200 p-1 rounded-md dark:bg-slate-900" />
         <p className="font-semibold">{data.title}</p>
       </div>
       <div className="flex flex-row items-center justify-between w-full">
@@ -28,7 +27,11 @@ const VacCard = ({ data }: JobDetails) => {
         </div>
         <StatusBadge status={data.status} />
       </div>
-      <div className="w-full">
+      <div className="w-full flex items-center justify-between">
+        <p className="font-semibold">
+          Total Applicants  
+          {data.applicants.length}
+        </p>
         <Button size="sm">View</Button>
       </div>
     </div>

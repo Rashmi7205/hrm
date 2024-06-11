@@ -1,31 +1,36 @@
 "use client";
 import { DataTableDemo } from '@/components/Datatable';
-import { columns, JobDetails} from './columns';
+import { columns} from './columns';
 import { getAllVacancies } from '@/actions/jobs/job.actions';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlignLeftIcon, Download, LayoutGrid, Plus } from 'lucide-react';
 import JobFilters from '@/app/components/JobFilters';
 import VacCard from '@/app/components/VacCard';
+import { JobDetails } from '@/types';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
   const [data, setData] = useState<JobDetails[]|null>(null);
+  const [statusSelected, setStatusSelected] = useState<string|string[]>("All Vacancies");
+  const [view, setView] = useState<string|null>("list");
+
   const getJobData = async ()=>{
-     const res = await getAllVacancies();
+     const res = await getAllVacancies(statusSelected);
      setData(res?.jobs);
   }
-  const [statusSelected, setStatusSelected] = useState<string|null>("All Vacancies");
-  const [view, setView] = useState<string|null>("list");
   useEffect(()=>{
     getJobData();
   },[view]);
 
   const statusList = [
     'All Vacancies',  
-    'open',
+    'active',
     'completed',
-    'inprogress'
+    'pending'
   ];
+
+  const router = useRouter();
 
   return (
     <main className='w-full flex flex-col h-min-[90vh]'>
@@ -78,6 +83,7 @@ const page = () => {
                 size="sm"
                 variant="secondary"
                 className='bg-blue-500 text-white text-xs'
+                onClick={()=>router.push('/vacancies/create')}
                 >
                 <Plus size={20}/>
                 Add Vacancy</Button>
@@ -85,8 +91,7 @@ const page = () => {
         </section>
         <div className='overflow-y-hidden h-4/5 flex flex-row items-start justify-around gap-1'>
           <div className='lg:w-4/5 flex flex-wrap gap-2 items-center justify-around my-3'>
-            {/* {data && (<DataTableDemo data={data} columns={columns}/>)} */}
-            {data && (data.map((item)=><VacCard data={item}/>))}
+            {(data && (view==="list")?(<DataTableDemo data={data} columns={columns}/>):(data?.map((item)=><VacCard data={item}/>)))}
           </div>
           <div className='lg:w-1/5'>
             <JobFilters/>

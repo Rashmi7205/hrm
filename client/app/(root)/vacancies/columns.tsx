@@ -13,36 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { JobDetails } from "@/types";
 
-export interface JobDetails {
-  salary: {
-    currency: string;
-    amount: string;
-    per_time: string;
-  };
-  contact: {
-    email: string;
-    phone: string;
-    contact_person: string;
-  };
-  _id: string;
-  title: string;
-  job_desc: string;
-  location: string;
-  status: string;
-  dept_name: string;
-  work_exp: string;
-  skills_req: string[];
-  employement_type: string;
-  opening_date: string;
-  closing_date: string;
-  education: string;
-  job_suitable_for: string[];
-  responsibility: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+
 
 export const columns: ColumnDef<JobDetails>[] = [
   {

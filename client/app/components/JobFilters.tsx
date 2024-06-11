@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import FilterBox from "./FilterBox";
+import { Filter } from "@/types";
 const JobFilters = () => {
     
-    const [filters, setFilters] = useState(null);
-    const [search,setSearch] = useState<[string]|[]>([]); 
+    const [filters, setFilters] = useState<Filter>();
+    const [search,setSearch] = useState<string[]>([]); 
     
     const getAllFilter = async()=>{
          try {
@@ -16,7 +17,6 @@ const JobFilters = () => {
          } catch (error : any) {
              toast(error.message);
          }
-     
      } 
      const handleSearch = (e:any)=>{
             const value  = e.target.value;
@@ -32,6 +32,9 @@ const JobFilters = () => {
      
     useEffect(()=>{
         getAllFilter();
+        return ()=>{
+            getAllFilter();
+        }
     },[]);
 
 
