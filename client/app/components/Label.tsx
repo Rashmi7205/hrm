@@ -7,7 +7,7 @@ type LabelType = {
 };
 const Label = ({title,desc,required}:LabelType) => {
   return (
-    <div className='w-1/2 flex gap-1 flex-col'>
+    <div className='w-3/5 flex gap-1 flex-col font-medium'>
         <p className='text-slate-800 text-md uppercase'>{title}{required&&<span className='text-red-600'>*</span>}</p>
         <p className='text-slate-400 text-xs'>{desc}</p>
     </div>
