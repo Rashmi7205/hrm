@@ -26,3 +26,25 @@ export const sideBarLinks = [
     },
 
 ];
+
+export const empTypes = [
+    'Full Time',
+    'Part Time',
+    'Contract',
+    'Freelance',
+    'Remote'
+];
+export const JobStatus = [
+    'inprogress',
+    'active',
+    'pending',
+    'completed'
+] 
+
+export const jobSuitbleFor =[
+    {title:"All",value:"all"},
+    {title:"Student",value:"student"},
+    {title:"Veteran",value:"veteran"},
+    {title:"Person With Disabilities",value:"person_with_disability"},
+    {title:"Experienced",value:"experienced"}
+];
