@@ -11,8 +11,8 @@ const NavBar = () => {
   })).format(now);
 
   return (
-    <nav className="w-full flex items-start justify-between border-2 px-8 py-2 rounded-lg">
-      <div className="w-3/5 flex items-center gap-3">
+    <nav className="w-full flex items-center justify-between border-2 px-8  rounded-lg">
+      <div className="w-3/5 flex items-center gap-3 ">
         <Image src="/icons/search.svg" alt="search" width={20} height={20} />
         <input
           type="text"

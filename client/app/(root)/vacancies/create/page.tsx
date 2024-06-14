@@ -1,6 +1,13 @@
+"use client";
+import { createVacancy } from "@/actions/jobs/job.actions";
 import { DatePickerDemo } from "@/app/components/DatePicker";
 import Label from "@/app/components/Label";
-import { empTypes, JobStatus, jobSuitbleFor } from "@/app/constants/constanst";
+import {
+  empTypes,
+  JobStatus,
+  jobSuitbleFor,
+  SalaryOptions,
+} from "@/app/constants/constanst";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,11 +17,71 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { Job } from "@/types";
+import { create } from "domain";
 import { Save } from "lucide-react";
-import React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const CrateVacancyForm = () => {
+  const [openDate,setOpenDate]=useState<Date>();
+  const [closeDate,setCloseDate] = useState<Date>();
+  const [selectedJobFor, setSelectedJobFor] = useState<string[]>([]);
+
+  const [jobData, setJobData] = useState<Job>({
+    title: "",
+    job_desc: "",
+    location: "",
+    status: "",
+    dept_name: "",
+    work_exp: "",
+    skills_req: [],
+    currency: "",
+    amount: "",
+    per_time: "",
+    employement_type: "",
+    opening_date: "",
+    closing_date: "",
+    education: "",
+    job_suitable_for: [],
+    responsibility: "",
+    email: "",
+    phone: "",
+    contact_person: "",
+  });
+
+  const handleSelectJobSuit =(event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = event.target;
+    setSelectedJobFor(prevValues => {
+      if (checked) {
+        // Add value to the selected values
+        return [...prevValues, value];
+      } else {
+        // Remove value from the selected values
+        return prevValues.filter(item => item !== value);
+      }
+    });
+  };
+
+  const handleCreateVacancy = async ()=>{
+      try {
+          const isCreated:Boolean = await createVacancy({
+            ...jobData,
+            opening_date:openDate?.toString(),
+            closing_date:closeDate?.toString(),
+            job_suitable_for:selectedJobFor
+          });
+          if(isCreated){
+            toast("New Vacancy Created");
+          }
+          else{
+            toast("Failded to create a new vacancy");
+          }
+      } catch (error) {
+          toast("Failded to create a new vacancy");
+      }
+  }
+
   return (
     <main className="w-full h-full flex flex-col gap-2">
       <section className="w-full flex justify-between">
@@ -23,7 +90,9 @@ const CrateVacancyForm = () => {
           <Button className="bg-red-300 text-red-700 border border-red-900">
             Cancel
           </Button>
-          <Button className="bg-blue-600 text-white border border-blue-900">
+          <Button 
+          onClick={handleCreateVacancy}
+          className="bg-blue-600 text-white border border-blue-900">
             <Save size={13} />
             Save
           </Button>
@@ -36,11 +105,23 @@ const CrateVacancyForm = () => {
             <h2>Basic Inforamation</h2>
             <div className="w-full flex flex-row items-center justify-between">
               <Label title="Job Title" desc="Add position name" />
-              <Input placeholder="Position name" />
+              <Input
+                placeholder="Position name"
+                name="title"
+                onChange={(e) =>
+                  setJobData({ ...jobData, [e.target.name]: e.target.value })
+                }
+              />
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <Label title="Job Department" desc="Add position name" />
-              <Input placeholder="Position" />
+              <Input
+                placeholder="Department"
+                name="dept_name"
+                onChange={(e) =>
+                  setJobData({ ...jobData, [e.target.name]: e.target.value })
+                }
+              />
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <Label
@@ -48,7 +129,13 @@ const CrateVacancyForm = () => {
                 desc="For effective candidate selection,enhance the job description with comprehensive details"
                 required={true}
               />
-              <Input placeholder="Enter Job description" />
+              <Input
+                placeholder="Enter Job description"
+                name="job_desc"
+                onChange={(e) =>
+                  setJobData({ ...jobData, [e.target.name]: e.target.value })
+                }
+              />
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <Label
@@ -56,17 +143,68 @@ const CrateVacancyForm = () => {
                 desc="Pick One or Multiple options"
               />
               <div className="w-full flex  text-sm gap-1 ">
-                {empTypes.map((empType) => (
-                  <div key={empType}>
-                    <input type="checkbox" />
-                    {empType}
-                  </div>
-                ))}
+                  <Select onValueChange={(value)=>setJobData({
+                    ...jobData,
+                    employement_type:value
+                  })}>
+                    <SelectTrigger>Select Type</SelectTrigger>
+                    <SelectContent>
+                       {
+                        empTypes.map((emp)=><SelectItem value={emp.value}>{emp.title}</SelectItem>)
+                       }
+                    </SelectContent>
+                  </Select>
               </div>
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <Label title="Job Location" desc="Chose the job location" />
-              <Input placeholder="Location" />
+              <Input
+                placeholder="Location"
+                name="location"
+                onChange={(e) =>
+                  setJobData({ ...jobData, [e.target.name]: e.target.value })
+                }
+              />
+            </div>
+            <div className="w-full flex flex-row items-center justify-between">
+              <Label title="Salary" desc="Choose how you prefer for this job" />
+              <div className="w-full flex gap-0.5">
+                <Select onValueChange={(value)=>{
+                  setJobData({
+                    ...jobData,
+                    currency:value
+                  })
+                }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SalaryOptions.currecyList.map((curr) => (
+                      <SelectItem key={curr} value={curr}>
+                        {curr}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input type="number" placeholder="salary" name="amount" onChange={(e)=>setJobData({...jobData,[e.target.name]:e.target.value})} />
+                <Select onValueChange={(value)=>{
+                  setJobData({
+                    ...jobData,
+                    per_time:value
+                  })
+                }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="monthly" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SalaryOptions.perTime.map((pt) => (
+                      <SelectItem key={pt} value={pt}>
+                        {pt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <Label
@@ -88,7 +226,11 @@ const CrateVacancyForm = () => {
             </div>
             <div className="w-full flex items-center justify-between">
               <Label title="Vacancy Status" desc="Choose Current stage" />
-              <Select>
+              <Select onValueChange={(value)=>setJobData(
+                {...jobData,
+                  status:value
+                }
+              )}>
                 <SelectTrigger>
                   <SelectValue placeholder="chosse status" />
                 </SelectTrigger>
@@ -103,8 +245,8 @@ const CrateVacancyForm = () => {
             </div>
             <div className="w-full flex items-center justify-between gap-1">
               <Label title="Opening & Closing Date" desc="(if applcable)" />
-              <DatePickerDemo title="Opening Date" />
-              <DatePickerDemo title="Closing Date" />
+              <DatePickerDemo title="Opening Date" date={openDate} setDate={setOpenDate} />
+              <DatePickerDemo title="Closing Date" date={closeDate} setDate={setCloseDate} />
             </div>
           </div>
         </div>
@@ -118,17 +260,26 @@ const CrateVacancyForm = () => {
                 title="Work Experience"
                 desc="Provide details About your experience"
               />
-              <Input value="no experience required" />
+              <Input  name="work_exp" onChange={(e)=>setJobData({
+                ...jobData,
+                [e.target.name]:e.target.value
+              })}/>
             </div>
             <div className="w-full flex items-center justify-between">
               <Label title="Education" desc="Select Education" />
-              <Input placeholder="education" />
+              <Input placeholder="education" name="education" onChange={(e)=>setJobData({
+                ...jobData,
+                [e.target.name]:e.target.value
+              })} />
             </div>
             <div className="w-full flex items-center justify-around">
               <Label title="The Job is Suitable For" desc="" />
               {jobSuitbleFor.map((jsf) => (
                 <div className="text-xs flex mx-2">
-                  <input type="checkbox" id={jsf.value} value={jsf.value} />
+                  <input type="checkbox" id={jsf.value}
+                     value={jsf.value}
+                     checked={selectedJobFor.includes(jsf.value)}
+                     onChange={handleSelectJobSuit} />
                   <label htmlFor={jsf.value}>{jsf.title}</label>
                 </div>
               ))}
@@ -140,43 +291,80 @@ const CrateVacancyForm = () => {
               />
               <textarea
                 placeholder={`Planning and executing..\nensure the function... \nsupporting Process...`}
-                rows={5} 
+                rows={5}
                 className="text-xs w-full border p-2 rounded"
+                name="responsibility"
+                onChange={(e)=>setJobData({
+                  ...jobData,
+                  [e.target.name]:e.target.value
+                }
+                )}
               />
             </div>
 
             <div className="w-full flex items-center justify-between">
-            <Label
+              <Label
                 title="Duties"
                 desc="Main Tasks that the candidate will be accountable for in this role"
               />
               <textarea
                 placeholder={`Planning and executing..\nensure the function... \nsupporting Process...`}
-                rows={5} 
+                rows={5}
                 className="text-xs w-full border p-2 rounded"
+                name="skills_req"
               />
             </div>
           </div>
           <div className="w-full border rounded-lg p-4 flex flex-col gap-3">
-          <h3 className="text-md font-semibold w-2/5 ">
+            <h3 className="text-md font-semibold w-2/5 ">
               Contact Information
             </h3>
             <div className="w-full flex items-center justify-between">
-              <Label title="Contact Person" desc="Person to contact for inquires"/>
-              <Input type="text" placeholder="Position Name"/>
+              <Label
+                title="Contact Person"
+                desc="Person to contact for inquires"
+              />
+              <Input type="text" placeholder="Position Name" name="contact_person" onChange={(e)=>{
+                setJobData(
+                  {
+                    ...jobData,
+                    [e.target.name]:e.target.value
+                  }
+                )
+              }}/>
             </div>
             <div className="w-full flex items-center justify-between">
-            <Label title="Contact Phone" desc="Phone for inquires"/>
-            <Input type="text" placeholder="Phone number"/>
+              <Label title="Contact Phone" desc="Phone for inquires" />
+              <Input type="text" placeholder="Phone number" name="phone"
+              onChange={(e)=>setJobData({
+                ...jobData,
+                [e.target.name]:e.target.value
+              })}
+              />
             </div>
             <div className="w-full flex items-center justify-between">
-            <Label title="Additional Contact" desc="Extra contact Info if needed"/>
-            <Input type="text" placeholder="whatssapp,Skype etc."/>
+              <Label
+                title="Additional Contact"
+                desc="Extra contact Info if needed"
+              />
+              <Input type="text" placeholder="email" 
+              name="email"
+              onChange={(e)=>setJobData({
+                ...jobData,
+                [e.target.name]:e.target.value
+              })
+              }
+              />
             </div>
             <div className="w-full flex items-center justify-between">
-              <Label title="Show contact" desc="This will be displayed on job page"/>
-              <input type="checkbox"  />
-              <p className="text-xs">Show the name and phone number on this job page</p>
+              <Label
+                title="Show contact"
+                desc="This will be displayed on job page"
+              />
+              <input type="checkbox" />
+              <p className="text-xs">
+                Show the name and phone number on this job page
+              </p>
             </div>
           </div>
         </div>

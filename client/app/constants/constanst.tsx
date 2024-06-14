@@ -28,11 +28,11 @@ export const sideBarLinks = [
 ];
 
 export const empTypes = [
-    'Full Time',
-    'Part Time',
-    'Contract',
-    'Freelance',
-    'Remote'
+    {title:"Full Time",value:'fulltime'},
+    {title:"Part Time",value:'parttime'},
+    {title:"Contract",value:'contract'},
+    {title:'Freelance',value:"freelance"},
+    {title:"Remote",value:'remote'}
 ];
 export const JobStatus = [
     'inprogress',
@@ -48,3 +48,15 @@ export const jobSuitbleFor =[
     {title:"Person With Disabilities",value:"person_with_disability"},
     {title:"Experienced",value:"experienced"}
 ];
+export const SalaryOptions = {
+    currecyList :[
+        "INR",
+        "EUR",
+        "USD"
+    ],
+    perTime:[
+        'hourly',
+        'monthly',
+        'anually'
+    ]
+}
