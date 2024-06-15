@@ -27,3 +27,5 @@ export const APPLICATION_STATUS = {
     OFFER:"offer",
     ONBOARD:"onboard",
 }
+export const LEAVE_TYPE_ENUM = ['annual','sick','casual','optional'];
+export const LEAVR_STATUS_ENUM = ['new_leave','approved','pending','rejected'];

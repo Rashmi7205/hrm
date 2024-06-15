@@ -6,15 +6,13 @@ import ServerError from '../utils/server.error.js';
 
 const authorizeUser = async (req,res,next)=>{
     try {
-        const {clerk_id,firstName,lastName,username,email,img_url,password} = req.body;
-
+        const {clerk_id,firstName,lastName,username,email,img_url} = req.body;
         if(!clerk_id || !email){
             return next(new ServerError("Required Fields are missing",400));
         }
         const isUserExist = await User.find({clerk_id:clerk_id});
         if(isUserExist.length > 0){
             const hrmAuthToken = await generateAuthToken(clerk_id);
-          console.log(hrmAuthToken);
             if(!hrmAuthToken){
                 return next(new ServerError("Internal Server error",501));
             }
@@ -34,7 +32,6 @@ const authorizeUser = async (req,res,next)=>{
                 username,
                 email,
                 img_url,
-                password,
                 phoneNumbers:[]
             });
 
@@ -59,7 +56,6 @@ const authorizeUser = async (req,res,next)=>{
         next(new ServerError("Internal Server Error",501));
     }  
 } 
-
 export {
     authorizeUser
 }

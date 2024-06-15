@@ -6,13 +6,15 @@ import jobRoutes from './Routes/job.routes.js';
 import applicationRoutes from './Routes/app.routes.js';
 import authRoutes from './Routes/user.routes.js';
 import empRoutes from './Routes/emp.routes.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(cors({
-    origin:"*",
+    origin:['http://localhost:3000'],
     credentials:true,
 }));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 

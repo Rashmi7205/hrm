@@ -84,8 +84,8 @@ export type Job = {
   amount: string;
   per_time: string;
   employement_type: string;
-  opening_date: string|undefined;
-  closing_date: string|undefined;
+  opening_date: string | undefined;
+  closing_date: string | undefined;
   education: string;
   job_suitable_for: string[];
   responsibility: string;
@@ -93,3 +93,13 @@ export type Job = {
   phone: string;
   contact_person: string;
 };
+export interface UserInfo {
+  firstName: string | null;
+  lastName: string |null;
+  email:string | null;
+  username: string | null;
+  clerk_id: string|null;
+  imageUrl:string|null;
+  fullName: string|null;
+  lastSignInAt: Date|null;
+}
