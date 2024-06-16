@@ -2,31 +2,79 @@ import ServerError from '../utils/server.error.js';
 import Employee, { BankInfo } from '../schemas/employee.schema.js';
 const getAllEmployees = async(req, res,next)=> {
     try {
-        const {search} = req.body;
+        const {search} = Array.isArray(req.body.search) ? req.body.search : [req.body.search];
         let {limit,skip} = req.body;
         if(!limit || !skip){
             limit  = 50;
             skip = 0;
         }
         if(search){
-            const empList = await Employee.find({
-                $or:[
-                    {name:{$in:search}},
-                    {position:{$in:search}},
-                    {email:{$in:search}},
-                    {dept_name:{$in:search}}
-                ]
-            }).limit(limit).skip(skip);
+            const empList = await Employee.aggregate([
+                // Match the employees based on search criteria
+                {
+                    $match: {
+                        $or: [
+                            { name: { $in: search } },
+                            { position: { $in: search} },
+                            { email: { $in: search } },
+                            { dept_name: { $in: search } }
+                        ]
+                    }
+                },
+                // Apply limit and skip for pagination
+                { $skip: skip },
+                { $limit: limit },
+                // Lookup leaves for the matched employees
+                {
+                    $lookup: {
+                      from: "leaves",
+                      localField: "_id",
+                      foreignField: "emp_id",
+                      as: "leaves"
+                    }
+                  },
+                  {
+                    $lookup: {
+                      from: "bankinfos",
+                      localField: "bank_info",
+                      foreignField: "_id",
+                      as: "bank_info"
+                    }
+                  }
+                // Optionally unwind the leaves array if you want a flat structure
+                // { $unwind: '$leaves' }
+            ]);
             return res.status(200).json({
                 empList
             });
         }else{
-            const empList = await Employee.find({}).limit(limit).skip(skip);
+            const empList = await Employee.aggregate([
+                { $skip: skip },
+                { $limit: limit },
+                // Lookup leaves for the matched employees
+                {
+                    $lookup: {
+                      from: "leaves",
+                      localField: "_id",
+                      foreignField: "emp_id",
+                      as: "leaves"
+                    }
+                  },
+                  {
+                    $lookup: {
+                      from: "bankinfos",
+                      localField: "bank_info",
+                      foreignField: "_id",
+                      as: "bank_info"
+                    }
+                  }
+            ]);
             return res.status(200).json({
                 empList
             });
         }   
     } catch (error) {
+        console.log(error);
         next(new ServerError("Internal Server Error",501));
     }
  }
