@@ -1,5 +1,6 @@
 import ServerError from '../utils/server.error.js';
 import Employee, { BankInfo } from '../schemas/employee.schema.js';
+import mongoose from 'mongoose';
 const getAllEmployees = async(req, res,next)=> {
     try {
         const {search} = Array.isArray(req.body.search) ? req.body.search : [req.body.search];
@@ -24,25 +25,17 @@ const getAllEmployees = async(req, res,next)=> {
                 // Apply limit and skip for pagination
                 { $skip: skip },
                 { $limit: limit },
-                // Lookup leaves for the matched employees
                 {
-                    $lookup: {
-                      from: "leaves",
-                      localField: "_id",
-                      foreignField: "emp_id",
-                      as: "leaves"
+                    $project:{
+                        _id:1,
+                        name:1,
+                        position:1,
+                        email:1,
+                        dept_name:1,
+                        date_of_joining:1,
+                        phone_number:1
                     }
-                  },
-                  {
-                    $lookup: {
-                      from: "bankinfos",
-                      localField: "bank_info",
-                      foreignField: "_id",
-                      as: "bank_info"
-                    }
-                  }
-                // Optionally unwind the leaves array if you want a flat structure
-                // { $unwind: '$leaves' }
+                }                
             ]);
             return res.status(200).json({
                 empList
@@ -51,30 +44,24 @@ const getAllEmployees = async(req, res,next)=> {
             const empList = await Employee.aggregate([
                 { $skip: skip },
                 { $limit: limit },
-                // Lookup leaves for the matched employees
                 {
-                    $lookup: {
-                      from: "leaves",
-                      localField: "_id",
-                      foreignField: "emp_id",
-                      as: "leaves"
+                    $project:{
+                        _id:1,
+                        name:1,
+                        position:1,
+                        email:1,
+                        dept_name:1,
+                        date_of_joining:1,
+                        phone_number:1
                     }
-                  },
-                  {
-                    $lookup: {
-                      from: "bankinfos",
-                      localField: "bank_info",
-                      foreignField: "_id",
-                      as: "bank_info"
-                    }
-                  }
+                }   
+               
             ]);
             return res.status(200).json({
                 empList
             });
         }   
     } catch (error) {
-        console.log(error);
         next(new ServerError("Internal Server Error",501));
     }
  }
@@ -84,7 +71,29 @@ const getEmployeeById = async(req, res,next)=> {
        if(!id){
         return next(new ServerError("Id is missing | Emp id is required",402));
        }
-       const emp = await Employee.findById(id);
+       const emp = await Employee.aggregate([
+        {
+            $match:{
+                _id:new mongoose.Types.ObjectId(id)
+            }
+        },
+        {
+            $lookup:{
+                from:"leaves",
+                localField:"_id",
+                foreignField:"emp_id",
+                as:"leaves"
+            }
+        },
+        {
+            $lookup:{
+                from:"bankinfos",
+                localField:"bank_info",
+                foreignField:"_id",
+                as:"bankinfo"
+            } 
+        }
+       ]);
        if(!emp){
         return next(new ServerError("Cannot Find Employee",400));
        }

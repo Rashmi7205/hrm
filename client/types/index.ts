@@ -103,3 +103,13 @@ export interface UserInfo {
   fullName: string|null;
   lastSignInAt: Date|null;
 }
+
+export interface EmployeeData{
+    _id: string;
+    name: string;
+    position: string;
+    dept_name: string;
+    date_of_joining: Date,
+    phone_number: string;
+    email:string;
+}

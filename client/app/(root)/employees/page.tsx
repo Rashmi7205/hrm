@@ -1,8 +1,11 @@
-import React from 'react'
+import { getAllEmployee } from "@/actions/employee"
 
-const page = () => {
+const page = async () => {
+  await getAllEmployee();
   return (
-    <div>page</div>
+    <main className='w-full flex flex-col h-min-[90vh]'>
+
+    </main>
   )
 }
 
