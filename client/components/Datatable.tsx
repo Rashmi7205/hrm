@@ -35,8 +35,8 @@ import { EmployeeData, JobDetails } from "@/types";
 // };
 
 interface DataTableDemoProps {
-  data: JobDetails[] | EmployeeData[];
-  columns: ColumnDef<JobDetails>[] | ColumnDef<EmployeeData>[];
+  data: JobDetails[] | EmployeeData[]|any;
+  columns: ColumnDef<JobDetails>[] | ColumnDef<EmployeeData>[] |any;
   searchBy:string;
 }
 
