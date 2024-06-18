@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import {ChevronDown} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table"
 import { Input } from "./ui/input";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { JobDetails } from "@/app/(root)/vacancies/columns";
+import { EmployeeData, JobDetails } from "@/types";
 
 // export type Payment = {
 //   id: string;
@@ -34,9 +34,14 @@ import { JobDetails } from "@/app/(root)/vacancies/columns";
 //   email: string;
 // };
 
+interface DataTableDemoProps {
+  data: JobDetails[] | EmployeeData[];
+  columns: ColumnDef<JobDetails>[] | ColumnDef<EmployeeData>[];
+  searchBy:string;
+}
 
-export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnDef<JobDetails>[]}) {
-  
+export function DataTableDemo({ data, columns,searchBy }: DataTableDemoProps) {
+  console.log(data);
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -68,10 +73,10 @@ export function DataTableDemo({data,columns,}:{data:JobDetails[],columns:ColumnD
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search By title..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          placeholder={`Search By ${searchBy}...`}
+          value={(table.getColumn(searchBy)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn(searchBy)?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

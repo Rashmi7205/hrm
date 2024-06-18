@@ -91,7 +91,7 @@ const page = () => {
         </section>
         <div className='overflow-y-hidden h-4/5 flex flex-row items-start justify-around gap-1'>
           <div className='lg:w-4/5 flex flex-wrap gap-2 items-center justify-around my-3'>
-            {(data && (view==="list")?(<DataTableDemo data={data} columns={columns}/>):(data?.map((item)=><VacCard data={item}/>)))}
+            {(data && (view==="list")?(<DataTableDemo data={data} columns={columns} searchBy="title"/>):(data?.map((item)=><VacCard data={item}/>)))}
           </div>
           <div className='lg:w-1/5'>
             <JobFilters/>

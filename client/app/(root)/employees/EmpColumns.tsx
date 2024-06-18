@@ -2,7 +2,7 @@
 import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, User } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import {
 
 import { EmployeeData } from "@/types";
 
-export const columns: ColumnDef<EmployeeData>[] = [
+export const empcolumns: ColumnDef<EmployeeData>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -39,6 +39,11 @@ export const columns: ColumnDef<EmployeeData>[] = [
     enableHiding: false,
   },
   {
+    id:"image",
+    header: "Image",
+    cell: ({ row }) => (<User className="p-1 bg-purple-300 rounded-md "/>)
+  },
+  {
     accessorKey: "name",
     header: ({ column }) => {
       return (
@@ -46,7 +51,7 @@ export const columns: ColumnDef<EmployeeData>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Position Title
+          Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -80,9 +85,20 @@ export const columns: ColumnDef<EmployeeData>[] = [
     enableSorting:true,
   },
   {
-    accessorKey:"email",
-    header: () => <div className="text-right">Email</div>,
-    cell: ({ row }) => {<div className="text-right font-medium">{row.getValue("email")}</div>},
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+    enableSorting:true,
   },
   {
     id: "actions",
