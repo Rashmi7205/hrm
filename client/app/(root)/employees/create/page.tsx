@@ -8,6 +8,20 @@ const page = () => {
   const [doj, setDoj] = useState<Date>();
   const [passExpDate, setPassExpDate] = useState<Date>();
   const [dob,setDob] = useState<Date>();
+  const [empData,setEmpData] = useState({
+    fullname:"",
+    position:"",
+    dept:"",
+    phone:"",
+    email:"",
+    passNo:"",
+    maritalStatus:"",
+    accNo:"",
+    bankName:"",
+    panNo:"",
+    ifscCode:"",
+    experience:[]
+  });
   
   return (
    <main className="w-full h-full flex flex-col gap-2">
@@ -18,7 +32,7 @@ const page = () => {
             <h3>Basic Information</h3>
             <div className="flex items-start justify-between gap-6 w-full">
               <Label title="Full Name" desc="Add employee Name"/>
-              <Input placeholder="employee name" type="text"/>
+              <Input placeholder="employee name" type="text" name="fullname"/>
             </div>
             <div className="flex items-center justify-between gap-6 w-full">
               <Label title="Position" desc="Choose position"/>
