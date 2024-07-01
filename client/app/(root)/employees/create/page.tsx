@@ -2,12 +2,21 @@
 import { DatePickerDemo } from "@/app/components/DatePicker"
 import Label from "@/app/components/Label"
 import { Input } from "@/components/ui/input"
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+
+interface ExpDataType {
+      company_name:string,
+      designation:string,
+      from:Date,
+      to:Date,
+      desc:string,
+}
 
 const page = () => {
   const [doj, setDoj] = useState<Date>();
   const [passExpDate, setPassExpDate] = useState<Date>();
   const [dob,setDob] = useState<Date>();
+  const [exp,setExp] = useState<ExpDataType>();
   const [empData,setEmpData] = useState({
     fullname:"",
     position:"",
@@ -22,6 +31,10 @@ const page = () => {
     ifscCode:"",
     experience:[]
   });
+  const addExp = () => {
+    
+};
+
   
   return (
    <main className="w-full h-full flex flex-col gap-2">
@@ -99,36 +112,37 @@ const page = () => {
               <Input placeholder="Enter IFSC Code" type="text"/>
             </div>
           </div> 
+          {/* Exp info */}
           <div className="p-5 flex flex-col items-start justify-between lg:w-[49%] sm:w-full border rounded-lg">
-            <h3>Basic Information</h3>
-            <div className="flex items-start justify-between gap-6 w-full">
-              <Label title="Full Name" desc="Add employee Name"/>
-              <Input placeholder="employee name" type="text"/>
-            </div>
-            <div className="flex items-center justify-between gap-6 w-full">
-              <Label title="Position" desc="Choose position"/>
-              <Input placeholder="Position" type="text"/>
-            </div>
-            <div className="flex items-center justify-between gap-6 w-full">
-              <Label title="department" desc="Choose department"/>
-              <Input placeholder="department" type="text"/>
-            </div>
-            <div className="flex items-center justify-between gap-6 w-full">
-              <Label title="Date of Joining" desc="Choose the employees starting join data"/>
-              <DatePickerDemo title="select the employee's date of join" date={doj} setDate={setDoj}/>
-            </div>
-            <div className="flex items-center justify-between gap-6 w-full">
-              <Label title="Phone Number" desc="Only numbers"/>
-              <Input placeholder="000-000-000" type="number"/>
-            </div>
-            <div className="flex items-center justify-between gap-6 w-full">
-              <Label title="Email addredd" desc="Add employee Email"/>
-              <Input placeholder="@example.com" type="email"/>
-            </div>
+              <h1>Experience</h1>
+              {
+                // empData.experience.map((exp,index)=><ExperienceForm data={exp} s/>)
+              }
+              
           </div>   
       </form>
    </main>
   )
+}
+
+interface ExpFormProps{
+    data:{
+      company_name:string,
+      designation:string,
+      from:Date,
+      to:Date,
+      desc:string,
+    },
+    setdata:Dispatch<SetStateAction<ExpDataType[]>>,
+    index:number
+}
+
+const ExperienceForm = ({data,setdata,index}:ExpFormProps)=>{
+    return (
+      <div>
+          expform
+      </div>
+    )
 }
 
 export default page
