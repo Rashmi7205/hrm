@@ -10,7 +10,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, PlusCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface ExpDataType {
   company_name: string;
@@ -44,15 +45,25 @@ const page = () => {
   const addExperience = ()=>{
     setEmpData({
       ...empData,
+      //@ts-ignore
       experience:[...empData.experience,exp]
     });
     setIsSheetOpen(false); 
   }
 
-  const handleExpChange = (e)=>{
+  const handleExpChange = (e:any)=>{
     const {name, value} = e.target;
+    //@ts-ignore
     setExp({...exp, [name]:value});
     
+  }
+
+  const handleCreate = async ()=>{
+    try {
+      
+    } catch (error:any) {
+      toast(error.message);
+    }
   }
 
   return (
@@ -154,90 +165,83 @@ const page = () => {
           <h1>Experience</h1>
           <div className="w-full">
               {
+              
                 empData.experience.map((exp)=><div className="w-full">
                   <div className="flex items-center justify-between w-full">
-                      <p className="font-bold">{exp?.designation}</p>
-                      <p className="text-slate-300">{exp?.company_name}</p>
+                      <p className="font-bold">{exp['designation']}</p>
+                      <p className="text-slate-300">{exp['company_name']}</p>
                   </div>
                   <div className="flex items-center justify-between w-full text-[14px]">
-                  <p className="text-slate-300 flex"><Calendar size={14}/> {exp?.from} - <Calendar size={14}/> {exp?.to}</p>
-                  <p className="text-slate-300 flex"><MapPin size={14}/> {exp?.location}</p>
+                  <p className="text-slate-300 flex"><Calendar size={14}/> {exp['from']} - <Calendar size={14}/> {exp['to']}</p>
+                  <p className="text-slate-300 flex"><MapPin size={14}/> {exp['location']}</p>
                   </div>
                   <div>
-                  {exp?.desc}
+                  {exp['desc']}
                   </div>
                 </div>)
               }
             </div>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger>Open</SheetTrigger>
-            <SheetContent className="w-[900px] sm:w-[540px]" >
+            <SheetTrigger className="flex gap-3 font-semibold">
+              <PlusCircle size={20}  className="text-blue-600"/> Add Work Experience 
+            </SheetTrigger>
+            <SheetContent className="sm:max-w-[800px]" >
               <SheetHeader className="wfull">
-                <SheetTitle>Add Experience?</SheetTitle>
+                <SheetTitle>Add Experience</SheetTitle>
                 <div className="container mx-auto mt-8 p-4">
                   <h2 className="text-2xl font-bold mb-4">Experience Form</h2>
-                  <div className="experience-item mb-4 p-4 border rounded bg-gray-100">
-                    <div className="mb-2">
-                      <label className="block text-gray-700">
-                        Company Name:
-                      </label>
-                      <input
-                        type="text"
-                        name="company_name"
-                        className="w-full px-3 py-2 border rounded"
-                        onChange={handleExpChange}
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label className="block text-gray-700">
-                        Designation:
-                      </label>
-                      <input
+                  <div className="experience-item mb-4 p-4 border rounded">
+                  <div className="mb-2 flex">
+                      <Label title="Job Title" desc="Job title"/>
+                      <Input
                         type="text"
                         name="designation"
-                        className="w-full px-3 py-2 border rounded"
+                        className=" px-3 py-2 border rounded"
                         onChange={handleExpChange}
                       />
                     </div>
-                    <div className="mb-2">
-                      <label className="block text-gray-700">
-                        Location:
-                      </label>
+                    <div className="mb-2 flex">
+                      <Label title="Company name" desc="Company Name"/>
+                      <Input
+                        type="text"
+                        name="company_name"
+                        className=" px-3 py-2 border rounded"
+                        onChange={handleExpChange}
+                      />
+                    </div>                  
+                    <div className="mb-2 flex">
+                    <Label title="Location" desc="Company Location"/>
                       <input
                         type="text"
                         name="location"
-                        className="w-full px-3 py-2 border rounded"
+                        className=" px-3 py-2 border rounded"
                         onChange={handleExpChange}
                       />
                     </div>
-                    <div className="mb-2">
-                      <label className="block text-gray-700">From:</label>
-                      <input
+                    <div className="mb-2 flex">
+                      <Label title="Period OF Work" desc="Period Of Work" />
+                      <Input
                         type="date"
                         name="from"
-                        className="w-full px-3 py-2 border rounded"
+                        placeholder="Start Date"
+                        className=" px-3 py-2 border rounded"
                         onChange={handleExpChange}
                       />
-                    </div>
-                    <div className="mb-2">
-                      <label className="block text-gray-700">To:</label>
-                      <input
+                       <Input
                         type="date"
                         name="to"
-                        className="w-full px-3 py-2 border rounded"
+                        placeholder="End Date"
+                        className=" px-3 py-2 border rounded"
                         onChange={handleExpChange}
                       />
                     </div>
-                    <div className="mb-2">
-                      <label className="block text-gray-700">
-                        Description:
-                      </label>
-                      <input
-                        type="text"
+                    <div className="mb-2 flex">
+                     <Label title="Responsibilites" desc="Responsibilites of the work"/>
+                      <textarea
                         name="desc"
-                        className="w-full px-3 py-2 border rounded"
+                        className="px-3 py-2 border rounded w-full"
                         onChange={handleExpChange}
-                      />
+                      ></textarea>
                     </div>
                     
                   </div>

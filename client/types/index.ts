@@ -113,3 +113,35 @@ export interface EmployeeData{
     phone_number: string;
     email:string;
 }
+
+export interface NewEmpType{
+  empinfo: {
+    fullname: string;
+    position: string;
+    dept: string;
+    doj: Date;
+    phone: string;
+    email: string;
+  },
+  personalInfo: {
+    passNo: string;
+    passExpDate: Date;
+    dob: Date;
+    maritalStatus:string;
+  },
+  bankInfo: {
+    accNo: string;
+    bankName: string;
+    panNo: string;
+    ifscCode: string;
+  },
+  experience: [
+    {
+      company_name: string;
+      designation: string;
+      from: Date;
+      to: Date;
+      desc:string;
+    }
+  ]
+}
