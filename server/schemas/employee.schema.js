@@ -11,6 +11,8 @@ const EmployeeSchema = new Schema({
     passport_exp_date: { type: Date,},
     dob: { type: Date, required: true },
     documents: { type: [String], },
+    status:{type:String,default:"active"},
+    skills:{type:[String]},
     bank_info: { type: [mongoose.Schema.Types.ObjectId], ref: 'BankInfo',},
     experience: {type:[
         {

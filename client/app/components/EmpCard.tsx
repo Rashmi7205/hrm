@@ -75,9 +75,9 @@ export const EmpCards = ({
                 <span className="text-sm flex gap-1 items-center border-b p-1"><Mail size={14}/>{item.email}</span>
                 <span className="text-sm flex gap-1 items-center"><PhoneCall size={14}/>{item.phone_number}</span>
             </div>
-            <div className="my-2 flex w-full gap-1">
-                <Link href={`/employees/${item?._id}`}  className="w-1/2 ">Edit</Link>
-                <Link href={`/employees/${item?._id}`} className="w-1/2 bg-blue-600">View</Link >
+            <div className="my-4 flex w-full justify-around">
+                <Link href={`/employees/${item?._id}`}  className="inline-block rounded border border-current px-14 py-3 text-sm font-medium text-indigo-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500">Edit</Link>
+                <Link href={`/employees/${item?._id}`} className="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500">View</Link >
             </div>
           </Card>
         </Link>

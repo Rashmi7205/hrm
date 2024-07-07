@@ -24,7 +24,7 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!vjalue)}
         aria-label="Select all"
       />
     ),

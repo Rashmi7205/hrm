@@ -33,7 +33,9 @@ const getAllEmployees = async(req, res,next)=> {
                         email:1,
                         dept_name:1,
                         date_of_joining:1,
-                        phone_number:1
+                        phone_number:1,
+                        status:1,
+                        
                     }
                 }                
             ]);
@@ -109,6 +111,7 @@ const createEmployee = async (req, res,next) =>{
         const {fullname,position,dept,doj,phone,email} = req.body.empinfo;
         const {passNo,passExpDate,dob,maritalStatus} = req.body.personalInfo;
         const {accNo,bankName,panNo,ifscCode} = req.body.bankInfo;
+        const {skills} = req.body.skills;
         
         if(!fullname||!position||!dept||!doj||!phone||!email){
             return next(new ServerError("Missing Emp info params",400));
@@ -140,6 +143,7 @@ const createEmployee = async (req, res,next) =>{
             passport_exp_date:passExpDate,
             dob:dob,
             bank_info:[newBankInfo?._id],
+            skills
         };
         if(req.body.experience && req.body.experience.length){
             let expList = req.body.experience;

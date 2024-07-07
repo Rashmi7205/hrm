@@ -115,33 +115,27 @@ export interface EmployeeData{
 }
 
 export interface NewEmpType{
-  empinfo: {
-    fullname: string;
-    position: string;
-    dept: string;
-    doj: Date;
-    phone: string;
-    email: string;
-  },
-  personalInfo: {
-    passNo: string;
-    passExpDate: Date;
-    dob: Date;
-    maritalStatus:string;
-  },
-  bankInfo: {
-    accNo: string;
-    bankName: string;
-    panNo: string;
-    ifscCode: string;
-  },
+  fullname: string,
+  position: string,
+  dept: string,
+  phone: string,
+  email: string,
+  passNo: string,
+  maritalStatus: string,
+  accNo: string,
+  bankName: string,
+  panNo: string,
+  ifscCode: string,
+  doj:Date |undefined, 
+  dob:Date | undefined,
+  passExpDate:Date,
+  skills:string[],
   experience: [
-    {
-      company_name: string;
-      designation: string;
-      from: Date;
-      to: Date;
-      desc:string;
-    }
+    {company_name: string;
+  designation: string;
+  location:string;
+  from: Date;
+  to: Date;
+  desc: string;}
   ]
 }

@@ -23,8 +23,6 @@ const page = () => {
         }
         getUserInfo(userData)
        
-    }else{
-      router.push('/sign-in');
     }
   },[]);
   return (
