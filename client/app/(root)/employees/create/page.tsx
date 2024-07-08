@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/sheet";
 import { Calendar, MapPin, PlusCircle } from "lucide-react";
 import { toast } from "sonner";
-import { addNewEmp } from "@/actions/employee";
+
 import { Button } from "@/components/ui/button";
-import { AllSkills, departments, positions, skills } from "@/app/constants/constanst";
+import { AllSkills, departments, positions } from "@/app/constants/constanst";
 import {
   Select,
   SelectContent,
@@ -23,15 +23,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import BadgeContainer from "@/app/components/BadgeContainer";
+import { ExpDataType } from "@/types";
+import { addNewEmp } from "@/actions/employee";
 
-interface ExpDataType {
-  company_name: string;
-  designation: string;
-  location: string;
-  from: Date;
-  to: Date;
-  desc: string;
-}
+
 
 const page = () => {
   const [doj, setDoj] = useState<Date>();

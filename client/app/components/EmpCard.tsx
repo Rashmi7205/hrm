@@ -23,8 +23,7 @@ export const EmpCards = ({
       )}
     >
       {items.map((item, idx) => (
-        <Link
-          href={`/employees/${item?._id}`}
+        <div
           key={item?._id}
           className="relative group  block p-2 h-full  w-[350px] border rounded-lg"
           onMouseEnter={() => setHoveredIndex(idx)}
@@ -80,7 +79,7 @@ export const EmpCards = ({
                 <Link href={`/employees/${item?._id}`} className="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500">View</Link >
             </div>
           </Card>
-        </Link>
+        </div>
       ))}
     </div>
   );

@@ -49,3 +49,19 @@ export const addNewEmp = async (empData:NewEmpType)=>{
             return error;
         }
 }
+
+export const getEmpById  = async(empId:string)=>{
+  try {
+    if(!empId){
+      throw new Error("Provide Emp Id");
+    }
+    const {data} = await axios.get(`${apiUrl}/emp/${empId}`,{
+      withCredentials:true
+    });
+    if(data){
+      return data.emp[0];
+    }
+  } catch (error) {
+    return error;
+  }
+}

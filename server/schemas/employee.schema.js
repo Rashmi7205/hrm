@@ -13,6 +13,7 @@ const EmployeeSchema = new Schema({
     documents: { type: [String], },
     status:{type:String,default:"active"},
     skills:{type:[String]},
+    marital_status:{type:String},
     bank_info: { type: [mongoose.Schema.Types.ObjectId], ref: 'BankInfo',},
     experience: {type:[
         {
@@ -29,6 +30,7 @@ const EmployeeSchema = new Schema({
 
   const BankInfoSchema = new Schema({
     name_of_bank: { type: String, required: true },
+    account_number:{type:String,required:true},
     pan_no: { type: String,},
     ifsc_no: { type: String, required: true },
   },{timestamps:true});

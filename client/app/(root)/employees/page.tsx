@@ -1,5 +1,4 @@
 "use client";
-import { getAllEmployee } from "@/actions/employee";
 import { DataTableDemo } from "@/components/Datatable";
 import { EmployeeData } from "@/types";
 import React, { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import { EmpCards } from "@/app/components/EmpCard";
 import { Button } from "@/components/ui/button";
 import { Download, LayoutGrid, List, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getAllEmployee } from "@/actions/employee";
 
 const page = () => {
   const [empList, setEmplist] = useState<EmployeeData[]>();

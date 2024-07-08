@@ -94,7 +94,7 @@ const getEmployeeById = async(req, res,next)=> {
                 foreignField:"_id",
                 as:"bankinfo"
             } 
-        }
+        },
        ]);
        if(!emp){
         return next(new ServerError("Cannot Find Employee",400));
@@ -111,7 +111,7 @@ const createEmployee = async (req, res,next) =>{
         const {fullname,position,dept,doj,phone,email} = req.body.empinfo;
         const {passNo,passExpDate,dob,maritalStatus} = req.body.personalInfo;
         const {accNo,bankName,panNo,ifscCode} = req.body.bankInfo;
-        const {skills} = req.body.skills;
+        const {skills} = req.body.skills ||  [];
         
         if(!fullname||!position||!dept||!doj||!phone||!email){
             return next(new ServerError("Missing Emp info params",400));
@@ -124,6 +124,7 @@ const createEmployee = async (req, res,next) =>{
         }
         const bankInfo = {
             name_of_bank:bankName,
+            account_number:accNo,
             pan_no:panNo,
             ifsc_no:ifscCode
         };
@@ -135,6 +136,7 @@ const createEmployee = async (req, res,next) =>{
         let newEmpObj = {
             name:fullname,
             position,
+            marital_status:maritalStatus,
             dept_name:dept,
             date_of_joining:doj,
             phone_number:phone,

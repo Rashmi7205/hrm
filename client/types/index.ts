@@ -104,6 +104,15 @@ export interface UserInfo {
   lastSignInAt: Date|null;
 }
 
+export interface ExpDataType {
+  company_name: string;
+  designation: string;
+  location: string;
+  from: Date;
+  to: Date;
+  desc: string;
+}
+
 export interface EmployeeData{
     _id: string;
     name: string;
@@ -138,4 +147,8 @@ export interface NewEmpType{
   to: Date;
   desc: string;}
   ]
+}
+export interface LabelType {
+  label: string;
+  value:string;
 }

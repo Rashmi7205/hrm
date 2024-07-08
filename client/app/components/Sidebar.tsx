@@ -6,7 +6,7 @@ import { useUser } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { List, ListIcon } from 'lucide-react';
+import { AlignCenter} from 'lucide-react';
 
 const Sidebar = () => {
     const { user } = useUser();
@@ -50,7 +50,7 @@ const Sidebar = () => {
                 <Sheet>
                     <SheetTrigger>
                         <Button variant="ghost" className='text-white'>
-                            <ListIcon className='text-black'/>
+                            <AlignCenter className='text-black'/>
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className='w-64 bg-slate-800 text-white p-6'>
