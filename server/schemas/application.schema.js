@@ -12,7 +12,7 @@ const ApplicantsSchema = new mongoose.Schema({
     mob_no: { type: String, required: true },
     email: { type: String, required: true },
     resume: { type: String, required: true },
-    prev_exp: [Object],
+    prev_exp: [String],
     skills: { type: [String] },
     education_info: [
         {

@@ -15,8 +15,9 @@ interface EditExperienceModalProps {
 const EditExperienceModal: React.FC<EditExperienceModalProps> = ({ isOpen, onClose, experience, onSave }) => {
   const [formData, setFormData] = useState<ExpDataType[]>(experience);
 
-  const handleChange = (index: number, key: keyof ExpDataType, value: string) => {
+  const handleChange = (index: number, key: keyof ExpDataType, value: string ) => {
     const updatedExperience = [...formData];
+    //@ts-ignore
     updatedExperience[index][key] = value;
     setFormData(updatedExperience);
   };
@@ -28,7 +29,7 @@ const EditExperienceModal: React.FC<EditExperienceModalProps> = ({ isOpen, onClo
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-    <SheetContent>
+    <SheetContent className='overflow-y-auto'>
       <SheetHeader>
         <SheetTitle>Edit Experience</SheetTitle>
         <SheetDescription>Edit your job experience details below.</SheetDescription>

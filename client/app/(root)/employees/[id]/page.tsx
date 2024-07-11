@@ -16,7 +16,7 @@ const page = () => {
   const [personalInfoLabels, setPersonalInfoLabels] = useState<LabelType[]>([]);
   const [salaryLabels, setSalaryLabels] = useState<LabelType[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(true);
-  const [experience, setExperience] = useState<ExpDataType[]>( []);
+  const [experience, setExperience] = useState<ExpDataType[]>([]);
 
   const handleEdit = () => {
     setIsSheetOpen(true);

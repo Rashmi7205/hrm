@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { EmployeeData } from "@/types";
+import Link from "next/link";
 
 export const empcolumns: ColumnDef<EmployeeData>[] = [
   {
@@ -24,7 +25,7 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!vjalue)}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
@@ -122,8 +123,9 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
               Copy  ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Details</DropdownMenuItem>
-            <DropdownMenuItem>View Department</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/employees/${emp._id}`}>View Details</Link></DropdownMenuItem>
+            <DropdownMenuItem> <Link href={`/employees/${emp._id}`}>Update Details</Link></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
