@@ -1,24 +1,39 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { CalendarCheckIcon, CalendarDaysIcon, CalendarXIcon, CheckIcon, GraduationCapIcon } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
+import { useCallback, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useDropzone } from "react-dropzone";
+import {
+  BriefcaseBusiness,
+  CalendarXIcon,
+  CheckIcon,
+  GraduationCapIcon,
+  User,
+} from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { postJobApplication } from "@/actions/jobs/job.actions";
+import { useParams } from "next/navigation";
 
 export default function NewApplication() {
-
-  const [activeTab, setActiveTab] = useState(0)
+  const [activeTab, setActiveTab] = useState(0);
+  const [resumeFile,setResumeFile] = useState<File>();
+  const [isLoading,setIsLoading] = useState(false);
+  const {id}:{id:string} = useParams(); 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    jobRole: "",
     experience: "",
     otherInfo: "",
+    skills:[],
     educations: [
       {
         instituteName: "",
@@ -31,13 +46,13 @@ export default function NewApplication() {
         universityName: "",
       },
     ],
-  })
-  const handleInputChange = (e:any) => {
+  });
+  const handleInputChange = (e: any) => {
     if (e.target.name.startsWith("education-")) {
-      const index = parseInt(e.target.name.split("-")[1])
-      const [_, __, field] = e.target.name.split("-")
+      const index = parseInt(e.target.name.split("-")[1]);
+      const [_, __, field] = e.target.name.split("-");
       setFormData((prevState) => {
-        const updatedEducations = [...prevState.educations]
+        const updatedEducations = [...prevState.educations];
         if (field === "from" || field === "to") {
           updatedEducations[index] = {
             ...updatedEducations[index],
@@ -45,19 +60,19 @@ export default function NewApplication() {
               ...updatedEducations[index].period,
               [field]: e.target.value,
             },
-          }
+          };
         } else {
           updatedEducations[index] = {
             ...updatedEducations[index],
             [field]: e.target.value,
-          }
+          };
         }
-        return { ...prevState, educations: updatedEducations }
-      })
+        return { ...prevState, educations: updatedEducations };
+      });
     } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value })
+      setFormData({ ...formData, [e.target.name]: e.target.value });
     }
-  }
+  };
   const handleAddEducation = () => {
     setFormData((prevState) => ({
       ...prevState,
@@ -74,29 +89,35 @@ export default function NewApplication() {
           universityName: "",
         },
       ],
-    }))
-  }
-  const handleRemoveEducation = (index:number) => {
+    }));
+  };
+  const handleRemoveEducation = (index: number) => {
     setFormData((prevState) => ({
       ...prevState,
       educations: prevState.educations.filter((_, i) => i !== index),
-    }))
-  }
-  const handleSubmit = (e:any) => {
-    e.preventDefault()
-    console.log(formData)
-    alert("Application successfully submitted!")
-  }
+    }));
+  };
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    postJobApplication({...formData,resume:resumeFile,job_id:id});
+    alert("Application successfully submitted!");
+  };
   const handlePrevious = () => {
     if (activeTab > 0) {
-      setActiveTab(activeTab - 1)
+      setActiveTab(activeTab - 1);
     }
-  }
+  };
   const handleNext = () => {
     if (activeTab < 4) {
-      setActiveTab(activeTab + 1)
+      setActiveTab(activeTab + 1);
     }
-  }
+  };
+
+  const onDrop = useCallback(async (acceptedFiles:File[]) => {
+    const file = acceptedFiles[0];
+    setResumeFile(file);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
     <div className="bg-background rounded-lg  p-6 w-4/5 lg:h-[90%]">
@@ -106,23 +127,29 @@ export default function NewApplication() {
           <Button
             variant="ghost"
             size="icon"
-            className={activeTab === 0 ? "bg-green-500 text-primary-foreground z-50" : ""}
+            className={
+              activeTab === 0 ? "bg-green-500 text-primary-foreground z-50" : ""
+            }
             onClick={() => setActiveTab(0)}
           >
-            <CalendarDaysIcon className="w-5 h-5" />
+            <User className="w-5 h-5" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className={activeTab === 1 ? "bg-primary text-primary-foreground z-50" : ""}
+            className={
+              activeTab === 1 ? "bg-primary text-primary-foreground z-50" : ""
+            }
             onClick={() => setActiveTab(1)}
           >
-            <CalendarCheckIcon className="w-5 h-5" />
+            <BriefcaseBusiness className="w-5 h-5" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className={activeTab === 2 ? "bg-primary text-primary-foreground z-50" : ""}
+            className={
+              activeTab === 2 ? "bg-primary text-primary-foreground z-50" : ""
+            }
             onClick={() => setActiveTab(2)}
           >
             <CalendarXIcon className="w-5 h-5" />
@@ -130,7 +157,9 @@ export default function NewApplication() {
           <Button
             variant="ghost"
             size="icon"
-            className={activeTab === 3 ? "bg-primary text-primary-foreground z-50" : ""}
+            className={
+              activeTab === 3 ? "bg-primary text-primary-foreground z-50" : ""
+            }
             onClick={() => setActiveTab(3)}
           >
             <GraduationCapIcon className="w-5 h-5" />
@@ -138,7 +167,9 @@ export default function NewApplication() {
           <Button
             variant="ghost"
             size="icon"
-            className={activeTab === 4 ? "bg-primary text-primary-foreground z-50" : ""}
+            className={
+              activeTab === 4 ? "bg-primary text-primary-foreground z-50" : ""
+            }
             onClick={() => setActiveTab(4)}
           >
             <CheckIcon className="w-5 h-5" />
@@ -147,32 +178,47 @@ export default function NewApplication() {
       </div>
       <div className="relative flex items-center justify-between h-8">
         <div className="absolute inset-x-0 h-1 bg-muted rounded-full">
-          <div className="h-full bg-green-500 rounded-full" style={{ width: `${(activeTab / 4) * 100}%` }} />
+          <div
+            className="h-full bg-green-500 rounded-full"
+            style={{ width: `${(activeTab / 4) * 100}%` }}
+          />
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className={activeTab === 0 ? "bg-green-500 p-2  text-primary-foreground z-50" : "z-50 bg-green-500"}
+          className={
+            activeTab === 0
+              ? "bg-green-500 p-2  text-primary-foreground z-50"
+              : "z-50 bg-green-500"
+          }
           onClick={() => setActiveTab(0)}
         >
           <div className="flex flex-col items-center">
-            <CalendarDaysIcon className="w-5 h-5" />
+            <User className="w-5 h-5" />
           </div>
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          className={activeTab === 1 ? "p-2  text-primary-foreground z-50 bg-green-500" : "z-50 bg-green-500"}
+          className={
+            activeTab === 1
+              ? "p-2  text-primary-foreground z-50 bg-green-500"
+              : "z-50 bg-green-500"
+          }
           onClick={() => setActiveTab(1)}
         >
           <div className="flex flex-col items-center">
-            <CalendarCheckIcon className="w-5 h-5" />
+            <BriefcaseBusiness className="w-5 h-5" />
           </div>
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          className={activeTab === 2 ? " p-2  text-primary-foreground z-50 bg-green-500" : "z-50 bg-green-500"}
+          className={
+            activeTab === 2
+              ? " p-2  text-primary-foreground z-50 bg-green-500"
+              : "z-50 bg-green-500"
+          }
           onClick={() => setActiveTab(2)}
         >
           <div className="flex flex-col items-center">
@@ -182,7 +228,11 @@ export default function NewApplication() {
         <Button
           variant="ghost"
           size="icon"
-          className={activeTab === 3 ? "p-2  text-primary-foreground z-50 bg-green-500" : "z-50 bg-green-500"}
+          className={
+            activeTab === 3
+              ? "p-2  text-primary-foreground z-50 bg-green-500"
+              : "z-50 bg-green-500"
+          }
           onClick={() => setActiveTab(3)}
         >
           <div className="flex flex-col items-center">
@@ -192,7 +242,11 @@ export default function NewApplication() {
         <Button
           variant="ghost"
           size="icon"
-          className={activeTab === 4 ? "p-2  text-primary-foreground z-50 bg-green-500" : "z-50 bg-green-500"}
+          className={
+            activeTab === 4
+              ? "p-2  text-primary-foreground z-50 bg-green-500"
+              : "z-50 bg-green-500"
+          }
           onClick={() => setActiveTab(4)}
         >
           <div className="flex flex-col items-center">
@@ -247,16 +301,24 @@ export default function NewApplication() {
         )}
         {activeTab === 1 && (
           <form>
-            <h3 className="text-lg font-bold mb-2">Job Role</h3>
+            <h3 className="text-lg font-bold mb-2">Resume</h3>
             <div className="space-y-2">
-              <Label htmlFor="jobRole">Job Role</Label>
-              <Input
-                id="jobRole"
-                name="jobRole"
-                value={formData.jobRole}
-                onChange={handleInputChange}
-                placeholder="Enter the job role you are applying for"
-              />
+              <Label htmlFor="resume">Attach Your Resume Here </Label>
+              <div
+                {...getRootProps()}
+                className={`dropzone border-2 border-dashed rounded-lg p-6 text-center cursor-pointer ${
+                  isDragActive ? "border-indigo-600" : "border-gray-400"
+                }`}
+              >
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                  <p className="text-indigo-600">Drop the files here ...</p>
+                ) : (
+                  <p className="text-gray-600">
+                    Drag 'n' drop a resume file here, or click to select files
+                  </p>
+                )}
+              </div>
             </div>
             <div className="flex justify-between mt-4">
               <Button variant="outline" onClick={handlePrevious}>
@@ -299,14 +361,16 @@ export default function NewApplication() {
             </div>
           </form>
         )}
-      {activeTab === 3 && (
+        {activeTab === 3 && (
           <form>
             <h3 className="text-lg font-bold mb-2">Education</h3>
             {formData.educations.map((education, index) => (
               <div key={index} className="space-y-4 mb-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`education-${index}-instituteName`}>Institute Name</Label>
+                    <Label htmlFor={`education-${index}-instituteName`}>
+                      Institute Name
+                    </Label>
                     <Input
                       id={`education-${index}-instituteName`}
                       name={`education-${index}-instituteName`}
@@ -316,11 +380,30 @@ export default function NewApplication() {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor={`education-${index}-universityName`}>
+                      University Name
+                    </Label>
+                    <Input
+                      id={`education-${index}-universityName`}
+                      name={`education-${index}-universityName`}
+                      value={education.universityName}
+                      onChange={handleInputChange}
+                      placeholder="Enter the university name"
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor={`education-${index}-from`}>From</Label>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start font-normal">
-                          {education.period.from ? new Date(education.period.from).toLocaleDateString() : "Pick a date"}
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start font-normal"
+                        >
+                          {education.period.from
+                            ? new Date(
+                                education.period.from
+                              ).toLocaleDateString()
+                            : "Pick a date"}
                           <div className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -343,8 +426,13 @@ export default function NewApplication() {
                     <Label htmlFor={`education-${index}-to`}>To</Label>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start font-normal">
-                          {education.period.to ? new Date(education.period.to).toLocaleDateString() : "Pick a date"}
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start font-normal"
+                        >
+                          {education.period.to
+                            ? new Date(education.period.to).toLocaleDateString()
+                            : "Pick a date"}
                           <div className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -376,7 +464,9 @@ export default function NewApplication() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor={`education-${index}-courseType`}>Course Type</Label>
+                    <Label htmlFor={`education-${index}-courseType`}>
+                      Course Type
+                    </Label>
                     <Input
                       id={`education-${index}-courseType`}
                       name={`education-${index}-courseType`}
@@ -386,17 +476,12 @@ export default function NewApplication() {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`education-${index}-universityName`}>University Name</Label>
-                  <Input
-                    id={`education-${index}-universityName`}
-                    name={`education-${index}-universityName`}
-                    value={education.universityName}
-                    onChange={handleInputChange}
-                    placeholder="Enter the university name"
-                  />
-                </div>
-                <Button variant="outline" size="sm" onClick={() => handleRemoveEducation(index)}>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleRemoveEducation(index)}
+                >
                   Remove Education
                 </Button>
               </div>
@@ -421,5 +506,5 @@ export default function NewApplication() {
         )}
       </div>
     </div>
-  )
+  );
 }

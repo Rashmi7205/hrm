@@ -113,6 +113,30 @@ export interface ExpDataType {
   desc: string;
 }
 
+export interface NewApplicant{
+  name:string,
+  email:string,
+  job_id:string,
+  phone: string,
+  experience: string,
+  otherInfo:string,
+  resume:File,
+  skills:[String],
+  educations: [
+    {
+      instituteName: string,
+      period: {
+        from: null | Date,
+        to: null | Date,
+      },
+      course: string,
+      courseType: string,
+      universityName: string,
+    },
+  ],
+ 
+}
+
 export interface EmployeeData{
     _id: string;
     name: string;

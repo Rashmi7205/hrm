@@ -14,13 +14,21 @@ const ApplicantsSchema = new mongoose.Schema({
     resume: { type: String, required: true },
     prev_exp: [String],
     skills: { type: [String] },
+    social_links:{
+        linkedin: String,
+        github: String,
+    },  
     education_info: [
         {
-            institute_name: { type: String},
-            course: { type: String,},
-            startedAt: { type: Date,},
-            endedAt: { type: Date,},
-        }
+            instituteName: String,
+            period: {
+              from: Date,
+              to: Date,
+            },
+            course: String,
+            courseType: String,
+            universityName: String,
+          }
     ],
 }, { timestamps: true});
 

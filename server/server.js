@@ -8,6 +8,7 @@ import applicationRoutes from './Routes/app.routes.js';
 import authRoutes from './Routes/user.routes.js';
 import empRoutes from './Routes/emp.routes.js';
 import leaveRouter from './Routes/leave.routes.js';
+import bodyParser from 'body-parser';
 
 const app = express();  
 app.use(cors({
@@ -15,6 +16,7 @@ app.use(cors({
     credentials:true,
 }));
 
+app.use(bodyParser());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));

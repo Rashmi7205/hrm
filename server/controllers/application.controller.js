@@ -45,15 +45,16 @@ const createApplicant = async(req, res, next) => {
             job_id,
             mob_no,
             email,
-            resume,
             prev_exp,
             skills,
             education_info
         } = req.body;
-        // Basic validation
+        const resume = req.file.path;
+        //Basic validation
         if (!name || !job_id  || !mob_no || !email || !resume) {
            return next(new ServerError("Missing Required fields",404));
         }
+       
 
         // Check if the job_id exists
         const jobExists = await Job.findById(job_id);
