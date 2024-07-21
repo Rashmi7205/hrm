@@ -107,11 +107,11 @@ export function DataTableDemo({ data, columns,searchBy }: DataTableDemoProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md">
-        <Table>
-          <TableHeader>
+      <div className="my-6">
+        <Table className="rounded-lg">
+          <TableHeader className="rounded-xl bg-slate-200 my-6 overflow-hidden">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -127,7 +127,7 @@ export function DataTableDemo({ data, columns,searchBy }: DataTableDemoProps) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="border rounded-xl shadow-md">
+          <TableBody className="border rounded-md">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

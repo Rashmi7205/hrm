@@ -2,7 +2,7 @@
 import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Calendar, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Calendar,MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { JobDetails } from "@/types";
+import Link from "next/link";
 
 
 
@@ -186,7 +187,9 @@ export const columns: ColumnDef<JobDetails>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Job Details</DropdownMenuItem>
-            <DropdownMenuItem>View Department</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/new/${job._id}`}> View Application Form</Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

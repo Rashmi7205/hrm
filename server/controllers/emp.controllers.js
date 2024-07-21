@@ -1,15 +1,17 @@
 import ServerError from '../utils/server.error.js';
 import Employee, { BankInfo } from '../schemas/employee.schema.js';
 import mongoose from 'mongoose';
+
 const getAllEmployees = async(req, res,next)=> {
     try {
-        const {search} = Array.isArray(req.body.search) ? req.body.search : [req.body.search];
+        const search = Array.isArray(req.body.search) ? req.body.search : [req.body.search];
+        
         let {limit,skip} = req.body;
         if(!limit || !skip){
             limit  = 50;
             skip = 0;
         }
-        if(search){
+        if(search.length){
             const empList = await Employee.aggregate([
                 // Match the employees based on search criteria
                 {
@@ -34,8 +36,7 @@ const getAllEmployees = async(req, res,next)=> {
                         dept_name:1,
                         date_of_joining:1,
                         phone_number:1,
-                        status:1,
-                        
+                        status:1, 
                     }
                 }                
             ]);

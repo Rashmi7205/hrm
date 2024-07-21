@@ -3,7 +3,6 @@ import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal, User } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,40 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { EmployeeData } from "@/types";
+import { Payroll } from "@/types";
 import Link from "next/link";
 import { getFormattedTime } from "@/helpers";
 
-export const empcolumns: ColumnDef<EmployeeData>[] = [
+export const payrollColumns: ColumnDef<Payroll>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    id:"image",
-    header: "Image",
-    cell: ({ row }) => (<User className="p-1 bg-purple-300 rounded-md "/>)
-  },
-  {
-    accessorKey: "name",
+    accessorKey: "emp_name",
     header: ({ column }) => {
       return (
         <Button
@@ -58,10 +30,14 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="flex items-center gap-1">
+        <User className="p-1 bg-purple-300 rounded-md "/>
+        {row.getValue("emp_name")}
+        
+        </div>,
   },
   {
-    accessorKey: "position",
+    accessorKey: "emp_position",
     header: ({ column }) => {
       return (
         <Button
@@ -73,33 +49,37 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
         </Button>
       );
     },
-    cell: ({ row }) =><div>{row.getValue("position")}</div>,
+    cell: ({ row }) =><div>{row.getValue("emp_position")}</div>,
   },
   {
-    accessorKey: "dept_name",
-    header: "Department",
-    cell: ({ row }) => <div>{row.getValue("dept_name")}</div>,
+    accessorKey: "pay_rate",
+    header: "Pay Rate",
+    cell: ({ row }) => <div>{row.getValue("pay_rate")}</div>,
   },
   {
-    accessorKey: "date_of_joining",
-    header: "Date Of Joining",
-    cell: ({ row }) => <div>{getFormattedTime(row.getValue("date_of_joining"))}</div>,
+    accessorKey: "pay_period",
+    header: "Pay Period",
+    cell: ({ row }) => <div>{row.getValue("pay_period")}</div>,
     enableSorting:true,
   },
   {
-    accessorKey: "email",
+    accessorKey: "status",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+    cell: ({ row }) =><span
+    className="whitespace-nowrap rounded-full border px-2.5 py-0.5 text-sm bg-purple-300 text-purple-700"
+  >
+    {row.getValue("status")}
+  </span> ,
     enableSorting:true,
   },
   {
@@ -107,7 +87,7 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
     enableHiding: false,
     header: "Actions",
     cell: ({ row }) => {
-      const emp = row.original;
+      const payroll = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -119,14 +99,15 @@ export const empcolumns: ColumnDef<EmployeeData>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(emp._id)}
+              onClick={() => navigator.clipboard.writeText(payroll.emp_id)}
             >
               Copy  ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/employees/${emp._id}`}>View Details</Link></DropdownMenuItem>
-            <DropdownMenuItem> <Link href={`/employees/${emp._id}`}>Update Details</Link></DropdownMenuItem>
+              <Link href={`/employees/${payroll.emp_id}`}>View Details</Link>
+              </DropdownMenuItem> 
+            <DropdownMenuItem> <Link href={`/employees/${payroll.emp_id}`}>Update Details</Link></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

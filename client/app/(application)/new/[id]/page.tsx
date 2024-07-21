@@ -10,7 +10,12 @@ import {
   BriefcaseBusiness,
   CalendarXIcon,
   CheckIcon,
+  Github,
   GraduationCapIcon,
+  Linkedin,
+  LinkedinIcon,
+  Mail,
+  Smartphone,
   User,
 } from "lucide-react";
 import {
@@ -21,6 +26,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { postJobApplication } from "@/actions/jobs/job.actions";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function NewApplication() {
   const [activeTab, setActiveTab] = useState(0);
@@ -33,6 +39,8 @@ export default function NewApplication() {
     phone: "",
     experience: "",
     otherInfo: "",
+    linkedinLink:"",
+    githubLink:"",
     skills:[],
     educations: [
       {
@@ -97,9 +105,14 @@ export default function NewApplication() {
       educations: prevState.educations.filter((_, i) => i !== index),
     }));
   };
-  const handleSubmit = (e: any) => {
+  const handleSubmit =async (e: any) => {
     e.preventDefault();
-    postJobApplication({...formData,resume:resumeFile,job_id:id});
+    const applicationSubmitted = await postJobApplication({...formData,resume:resumeFile,job_id:id});
+    if(applicationSubmitted){
+        toast("Application Submitted");
+    }else{
+      toast("Something went wrong");
+    }
     alert("Application successfully submitted!");
   };
   const handlePrevious = () => {
@@ -138,7 +151,7 @@ export default function NewApplication() {
             variant="ghost"
             size="icon"
             className={
-              activeTab === 1 ? "bg-primary text-primary-foreground z-50" : ""
+              activeTab === 1 ? "bg-green-400 text-primary-foreground z-50" : ""
             }
             onClick={() => setActiveTab(1)}
           >
@@ -148,7 +161,7 @@ export default function NewApplication() {
             variant="ghost"
             size="icon"
             className={
-              activeTab === 2 ? "bg-primary text-primary-foreground z-50" : ""
+              activeTab === 2 ? "bg-green-400 text-primary-foreground z-50" : ""
             }
             onClick={() => setActiveTab(2)}
           >
@@ -158,7 +171,7 @@ export default function NewApplication() {
             variant="ghost"
             size="icon"
             className={
-              activeTab === 3 ? "bg-primary text-primary-foreground z-50" : ""
+              activeTab === 3 ? "bg-green-400 text-primary-foreground z-50" : ""
             }
             onClick={() => setActiveTab(3)}
           >
@@ -168,7 +181,7 @@ export default function NewApplication() {
             variant="ghost"
             size="icon"
             className={
-              activeTab === 4 ? "bg-primary text-primary-foreground z-50" : ""
+              activeTab === 4 ? "bg-green-400 text-primary-foreground z-50" : ""
             }
             onClick={() => setActiveTab(4)}
           >
@@ -260,7 +273,10 @@ export default function NewApplication() {
             <h3 className="text-lg font-bold mb-2">Personal Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name" className="flex items-center gap-2">
+                  <User/>
+                  Name
+                  </Label>
                 <Input
                   id="name"
                   name="name"
@@ -270,7 +286,8 @@ export default function NewApplication() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="flex items-center gap-2">
+                  <Mail/>Email</Label>
                 <Input
                   id="email"
                   name="email"
@@ -281,13 +298,39 @@ export default function NewApplication() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone" className="flex items-center gap-2">
+                <Smartphone/>  Phone
+                </Label>
                 <Input
                   id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
                   placeholder="Enter your phone number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="linkedinLink" className="flex items-center gap-2">
+                  <Linkedin className="rounded-full bg-blue-500 text-white p-1"/> Your Linkedin Profile
+                </Label>
+                <Input
+                  id="linkedinLink"
+                  name="linkedinLink"
+                  value={formData.linkedinLink}
+                  onChange={handleInputChange}
+                  placeholder="Linkedin profile url"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="githubLink" className="flex items-center gap-2">
+                  <Github className="bg-slate-800 rounded-full text-white p-1"/> Your Github Profile
+                </Label>
+                <Input
+                  id="githubLink"
+                  name="githubLink"
+                  value={formData.githubLink}
+                  onChange={handleInputChange}
+                  placeholder="Github Profile url"
                 />
               </div>
             </div>

@@ -9,6 +9,8 @@ import authRoutes from './Routes/user.routes.js';
 import empRoutes from './Routes/emp.routes.js';
 import leaveRouter from './Routes/leave.routes.js';
 import bodyParser from 'body-parser';
+import payrollRouter from './Routes/payroll.routes.js';
+import miscRouter from './Routes/misc.routes.js';
 
 const app = express();  
 app.use(cors({
@@ -16,7 +18,7 @@ app.use(cors({
     credentials:true,
 }));
 
-app.use(bodyParser());
+// app.use(bodyParser());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -27,6 +29,8 @@ app.use('/api/application',applicationRoutes);
 app.use('/api/auth',authRoutes);
 app.use('/api/emp',empRoutes);
 app.use('/api/leave',leaveRouter);
+app.use("/api/payroll",payrollRouter);
+app.use('/api/misc',miscRouter);
 
 app.all("*",async (req,res)=>{
     res.status(404).json({

@@ -47,7 +47,9 @@ const createApplicant = async(req, res, next) => {
             email,
             prev_exp,
             skills,
-            education_info
+            education_info,
+            linkedinLink,
+            githubLink,
         } = req.body;
         const resume = req.file.path;
         //Basic validation
@@ -72,7 +74,11 @@ const createApplicant = async(req, res, next) => {
             resume,
             prev_exp,
             skills,
-            education_info
+            education_info,
+            social_links:{
+                linkedinLink,
+                githubLink
+            }
         });
         // Save the applicant to the database
         const savedApplicant = await newApplicant.save();

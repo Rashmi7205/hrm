@@ -122,6 +122,8 @@ export interface NewApplicant{
   otherInfo:string,
   resume:File,
   skills:[String],
+  linkedinLink:string,
+  githubLink:string,
   educations: [
     {
       instituteName: string,
@@ -175,4 +177,13 @@ export interface NewEmpType{
 export interface LabelType {
   label: string;
   value:string;
+}
+export interface Payroll{
+    emp_id:string,
+    pay_period:string,
+    pay_rate:string,
+    status?:string,
+    emp_name:string,
+    emp_email?:string,
+    emp_position:string
 }

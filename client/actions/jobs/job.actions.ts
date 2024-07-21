@@ -83,8 +83,18 @@ export const  postJobApplication = async (appFormData:NewApplicant)=>{
         }
     });
     console.log(data);
-
   } catch (error) {
     return false;
   }
 }
+export const getVacancyById = async (id:string)=>{
+  try {
+      const {data} = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_API_URL!}/jobs/${id}`);
+      if(data){
+        return data;
+      }
+      return false;
+  } catch (error) {
+    return false;
+  }
+}  

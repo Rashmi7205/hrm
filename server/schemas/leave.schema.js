@@ -1,5 +1,5 @@
 import { Schema,model } from "mongoose";
-import { LEAVE_TYPE_ENUM, LEAVR_STATUS_ENUM } from "../constansts.js";
+import { LEAVE_TYPE_ENUM, LEAVE_STATUS_ENUM } from "../constansts.js";
 
 const leaveSchema = new Schema({
     emp_id:{type:Schema.Types.ObjectId,ref:'employee',required:true},
@@ -14,6 +14,6 @@ const leaveSchema = new Schema({
         type:Date,
     },
     reason:{type:String},
-    status:{type:String,enum:LEAVR_STATUS_ENUM},
+    status:{type:String,enum:LEAVE_STATUS_ENUM},
 },{timestamps:true});
 export default model('Leave',leaveSchema);
