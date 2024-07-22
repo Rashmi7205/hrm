@@ -177,6 +177,7 @@ export interface NewEmpType{
 export interface LabelType {
   label: string;
   value:string;
+  name?:string;
 }
 export interface Payroll{
     emp_id:string,

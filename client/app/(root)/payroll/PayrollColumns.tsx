@@ -14,7 +14,6 @@ import {
 
 import { Payroll } from "@/types";
 import Link from "next/link";
-import { getFormattedTime } from "@/helpers";
 
 export const payrollColumns: ColumnDef<Payroll>[] = [
   {

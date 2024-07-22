@@ -96,6 +96,20 @@ const getEmployeeById = async(req, res,next)=> {
                 as:"bankinfo"
             } 
         },
+        {
+            $lookup:{
+                from:"payrolls",
+                localField:"_id",
+                foreignField:"emp_id",
+                as:"salary_info"
+            } 
+        },
+        {
+            $unwind:"$salary_info"
+        },
+        {
+            $unwind:"$bankinfo"
+        }
        ]);
        if(!emp){
         return next(new ServerError("Cannot Find Employee",400));

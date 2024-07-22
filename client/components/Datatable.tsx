@@ -109,7 +109,7 @@ export function DataTableDemo({ data, columns,searchBy }: DataTableDemoProps) {
       </div>
       <div className="my-6">
         <Table className="rounded-lg">
-          <TableHeader className="rounded-xl bg-slate-200 my-6 overflow-hidden">
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} >
                 {headerGroup.headers.map((header) => {

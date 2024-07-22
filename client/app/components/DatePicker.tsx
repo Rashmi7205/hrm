@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/popover"
 interface DatePickerDemoProps {
   title: string;
-  date: Date | undefined;
-  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  date?: Date | undefined;
+  setDate?: React.Dispatch<React.SetStateAction<Date | undefined>>;
 }
 export function DatePickerDemo({title,date,setDate}:DatePickerDemoProps) {
 
