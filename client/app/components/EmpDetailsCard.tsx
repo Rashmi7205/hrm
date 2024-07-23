@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 type EmpDetailsCardProps = {
   list: LabelType[];
   title: string;
-  updateHandler: ({key,value,type}:{key:string,value:string,type?:string}) => {};
+  updateHandler: ({key,value,type}:{key:string,value:string,type?:string}) => void;
 };
 
 const EmpDetailsCard = ({
@@ -31,7 +31,7 @@ const EmpDetailsCard = ({
   updateHandler,
 }: EmpDetailsCardProps) => {
 
-  const handleInputChange = (e)=>{
+  const handleInputChange = (e:any)=>{
     const {name,value} = e.target;
     if(title.toLocaleLowerCase() == "personal info"){
       updateHandler({key:name,value,type:"personal_info"});

@@ -1,3 +1,4 @@
+'use server';
 import { NewEmpType } from "@/types";
 import axios from "axios";
 

@@ -1,3 +1,4 @@
+'use server';
 import { Job, NewApplicant } from "@/types";
 import axios from "axios";
 

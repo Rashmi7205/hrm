@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 const page = () => {
   const [empList, setEmplist] = useState<EmployeeData[]>();
   const [loading, setLoading] = useState(false);
-  const [view, setView] = useState<"card" | "list">("card");
+  const [view, setView] = useState<"card" | "list">("list");
   const [selectedDepartment, setSelectedDepartment] = useState<string[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]);
   const router = useRouter();

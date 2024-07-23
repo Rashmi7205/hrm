@@ -6,14 +6,7 @@ import EmpDetailsCard from "@/app/components/EmpDetailsCard";
 import Loader from "@/app/components/Loader";
 import { getFormattedTime } from "@/helpers";
 import { ExpDataType, LabelType } from "@/types";
-import {
-  Calendar,
-  Edit,
-  Mail,
-  MapPin,
-  PhoneCall,
-  User,
-} from "lucide-react";
+import { Calendar, Edit, Mail, MapPin, PhoneCall, User } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -102,8 +95,8 @@ const page = () => {
         {
           label: "Status",
           value: salaryinfo.status,
-          name:"status"
-        }
+          name: "status",
+        },
       ]);
     } catch (error) {
       console.log(error);
@@ -119,29 +112,45 @@ const page = () => {
     value: string;
     type?: string;
   }) => {
-    console.log(type);
-    if (type=== "personal_info") {
-        setEmpData(
-          {...empData,
-            [key]:value}
+    if (type === "personal_info") {
+      //@ts-ignore
+      setEmpData({ ...empData, [key]: value });
+      setPersonalInfoLabels((prevLabels) =>
+        prevLabels.map((item) =>
+          item.name === key ? { ...item, value: value } : item
         )
-        setPersonalInfoLabels((prevLabels) =>
-          prevLabels.map((item) =>
-            item.name === name ? { ...item, value: value } : item
-          )
-        );
+      );
     }
-    if (type ==="salary_info") {
-     // console.log(key, value);
+    if (type === "salary_info") {
+      //@ts-ignore
+      setEmpData({...empData,salary_info:{...empData.salary_info,
+          [key]: value
+        }
+      });
+      setSalaryLabels((prevLabels) =>
+        prevLabels.map((item) =>
+          item.name === key ? { ...item, value: value } : item
+        )
+      );
     }
-    if (type== "bank_info") {
-      //console.log(key, value);
+    if (type == "bank_info") {
+      //@ts-ignore
+      setEmpData({...empData,bankinfo: {...empData?.bankinfo,
+          [key]: value,
+        },
+      });
+      setBankInfoLabels((prevLabels) =>
+        prevLabels.map((item) =>
+          item.name === key ? { ...item, value: value } : item
+        )
+      );
     }
+    console.log(empData);
   };
 
   useEffect(() => {
     getData();
-  }, [setBankInfoLabels,setPersonalInfoLabels,setSalaryLabels]);
+  }, [setBankInfoLabels, setPersonalInfoLabels, setSalaryLabels]);
   return (
     <main className="w-full flex items-center justify-center overflow-x-hidden">
       {empData ? (
@@ -154,10 +163,10 @@ const page = () => {
               />
               <div className="flex flex-col gap-2">
                 <p className="text-pretty font-bold tracking-wider">
-                  {empData?.name}
+                  {empData['name']}
                 </p>
                 <p className="text-center bg-yellow-400 font-medium text-xs rounded-lg p-1">
-                  {empData?.position}
+                  {empData['position']}
                 </p>
               </div>
             </div>
@@ -198,13 +207,11 @@ const page = () => {
             />
           )}
           {bankInfoLabels && (
-            <EmpDetailsCard list={bankInfoLabels} title="Bank Details" />
+            <EmpDetailsCard list={bankInfoLabels} title="Bank Details" updateHandler={handleEditEmpInfo} />
           )}
-          {
-            salaryLabels && (
-              <EmpDetailsCard list={salaryLabels} title="Salary Details" />
-            )
-          }
+          {salaryLabels && (
+            <EmpDetailsCard list={salaryLabels} title="Salary Details"  updateHandler={handleEditEmpInfo}/>
+          )}
           <div className="w-[300px] border py-5 px-3 rounded-md gap-4 text-xs flex flex-col">
             <div className="w-full">
               <p className="text-md font-bold">Experience</p>
@@ -242,7 +249,7 @@ const page = () => {
           />
         </div>
       ) : (
-        <Loader/>
+        <Loader />
       )}
     </main>
   );

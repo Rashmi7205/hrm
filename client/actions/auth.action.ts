@@ -1,3 +1,4 @@
+'use server';
 import { UserInfo } from "@/types";
 import axios from "axios";
 export const getUserInfo = async (userData:UserInfo)=>{

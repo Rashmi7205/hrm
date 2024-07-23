@@ -1,5 +1,6 @@
 import ServerError from '../utils/server.error.js';
 import Employee, { BankInfo } from '../schemas/employee.schema.js';
+import Payroll from '../schemas/payroll.schema.js';
 import mongoose from 'mongoose';
 
 const getAllEmployees = async(req, res,next)=> {
@@ -17,7 +18,7 @@ const getAllEmployees = async(req, res,next)=> {
                 {
                     $match: {
                         $or: [
-                            { name: { $in: search } },
+                        { name: { $in: search } },
                             { position: { $in: search} },
                             { email: { $in: search } },
                             { dept_name: { $in: search } }
@@ -190,14 +191,26 @@ const updateEmployee = async (req, res, next) =>{
         if(!id){
             return next(new ServerError("Emp id required",400));
         }
-        const {fullname,position,dept,doj,phone,email} = req.body.empinfo;
+        const {fullname,position,dept,doj,phone,email,skills} = req.body.empInfo;
         const {passNo,passExpDate,dob,maritalStatus} = req.body.personalInfo;
-        const {accNo,bankName,panNo,ifscCode} = req.body.bankInfo;
+        const {accountNumber,bankName,panNo,ifscCode} = req.body.bankInfo;
+        const {pay_period,pay_status,pay_rate} = req.body.salaryInfo;
+        const {experience} = req.body || [];
+        
+        if(!pay_period || !pay_rate || !pay_status){
+            return next(new ServerError("Salary Info Required",400));
+        }
+
+        await Payroll.updateOne({emp_id:id},{
+            pay_period,
+            status:pay_status,
+            pay_rate
+        });
         
         if(!fullname||!position||!dept||!doj||!phone||!email){
             return next(new ServerError("Missing Emp info params",400));
         }
-        if(!accNo || !bankName||!panNo||!ifscCode){
+        if(!accountNumber || !bankName||!panNo||!ifscCode){
             return next(new ServerError("Missing Banking info params",400));
         }
         if(!passNo||!passExpDate||!dob||!maritalStatus){
@@ -206,7 +219,8 @@ const updateEmployee = async (req, res, next) =>{
         const bankInfo = {
             name_of_bank:bankName,
             pan_no:panNo,
-            ifsc_no:ifscCode
+            ifsc_no:ifscCode,
+            account_number:accountNumber
         };
         const newBankInfo = await  BankInfo.create(bankInfo);
         newBankInfo.save();
@@ -224,25 +238,17 @@ const updateEmployee = async (req, res, next) =>{
             passport_exp_date:passExpDate,
             dob:dob,
             bank_info:[newBankInfo?._id],
+            marital_status:maritalStatus,
+            skills:skills,
+            experience
         };
-        if(req.body.experience && req.body.experience.length){
-            let expList = req.body.experience;
-            expList.forEach((exp)=>{
-                if(!exp.company_name||!exp.designation||!exp.from||!exp.to){
-                    return next(new ServerError("Field Mismatch ",400));
-                }
-            });
-            updatedEmp = {
-                ...updatedEmp,
-                experience:expList
-            }
-        }
         const updateCureentEmp = await Employee.findByIdAndUpdate(id,updatedEmp);
         if(!updateCureentEmp){
             return next(new ServerError("Cannot Update Emp",400));
         }   
         res.status(200).json({success:true,message:"Employee updated successfully"});
     } catch (error) {
+        console.log(error);
         next(new ServerError("Internal Server Error",501));
     }
 }

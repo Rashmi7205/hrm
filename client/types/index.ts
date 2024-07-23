@@ -180,11 +180,11 @@ export interface LabelType {
   name?:string;
 }
 export interface Payroll{
-    emp_id:string,
+    emp_id?:string,
     pay_period:string,
     pay_rate:string,
     status?:string,
-    emp_name:string,
+    emp_name?:string,
     emp_email?:string,
-    emp_position:string
+    emp_position?:string
 }
