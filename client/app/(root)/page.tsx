@@ -4,6 +4,8 @@ import { getUserInfo } from "@/actions/auth.action";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Dashboard from "../components/Dashboard/Demo";
+import CanbanBoard from "../components/CanbanBoard/CanbanBoard";
 
 const page = () => {
   const {user} = useUser();
@@ -26,7 +28,9 @@ const page = () => {
     }
   },[]);
   return (
-    <div>page</div>
+    <div>
+      <CanbanBoard/>
+    </div>
   )
 }
 

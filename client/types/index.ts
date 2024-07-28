@@ -188,3 +188,10 @@ export interface Payroll{
     emp_email?:string,
     emp_position?:string
 }
+
+// canbab Board Types
+export type Id = number;
+export type Column = {
+  id: Id;
+  title: string;
+}

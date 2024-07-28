@@ -1,9 +1,12 @@
 "use client";
 
 import { getEmpById } from "@/actions/employee";
+import BadgeContainer from "@/app/components/BadgeContainer";
 import EditExperienceModal from "@/app/components/EditExperienceModal";
 import EmpDetailsCard from "@/app/components/EmpDetailsCard";
 import Loader from "@/app/components/Loader";
+import { AllSkills } from "@/app/constants/constanst";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getFormattedTime } from "@/helpers";
 import { ExpDataType, LabelType } from "@/types";
 import { Calendar, Edit, Mail, MapPin, PhoneCall, User } from "lucide-react";
@@ -18,6 +21,7 @@ const page = () => {
   const [salaryLabels, setSalaryLabels] = useState<LabelType[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [experience, setExperience] = useState<ExpDataType[]>([]);
+  const [skills, setSkills] = useState<string[]>([]);
 
   const handleEdit = () => {
     setIsSheetOpen(true);
@@ -98,6 +102,8 @@ const page = () => {
           name: "status",
         },
       ]);
+      setSkills(data?.skill);
+      
     } catch (error) {
       console.log(error);
     }
@@ -145,8 +151,27 @@ const page = () => {
         )
       );
     }
-    console.log(empData);
+  
   };
+
+  const addSkill = (newSkill: string) => {
+    if (!skills.includes(newSkill)) {
+      setSkills([...skills, newSkill]);
+    }
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    const updatedSkills = skills.filter((skill) => skill !== skillToRemove);
+    setSkills(updatedSkills);
+  };
+
+  const updateEmpData = async ()=>{
+      console.log(empData);
+      console.log(experience);
+      console.log(skills);
+
+  }
+
 
   useEffect(() => {
     getData();
@@ -155,6 +180,11 @@ const page = () => {
     <main className="w-full flex items-center justify-center overflow-x-hidden">
       {empData ? (
         <div className="w-full flex items-start justify-start flex-wrap gap-y-4">
+           <button
+      onClick={updateEmpData}
+      >
+        Save
+      </button>
           <div className="w-[300px] border py-5 px-3 rounded-md gap-4 text-xs flex flex-col">
             <div className="w-full flex gap-3 items-center justify-between">
               <User
@@ -179,11 +209,7 @@ const page = () => {
                 <p className="text-slate-500">Date Of Joining</p>
                 <p className="font-semibold">
                   {empData["date_of_joining"]
-                    ? new Intl.DateTimeFormat("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }).format(new Date(empData["date_of_joining"]))
+                    ?getFormattedTime(empData['date_of_joining'])
                     : ""}
                 </p>
               </div>
@@ -212,6 +238,22 @@ const page = () => {
           {salaryLabels && (
             <EmpDetailsCard list={salaryLabels} title="Salary Details"  updateHandler={handleEditEmpInfo}/>
           )}
+            <div className="w-[300px] p-5 flex flex-col items-start justify-between lg:w-[49%] sm:w-full border rounded-lg mx-2">
+          <h1>Add Skills</h1>
+          <BadgeContainer list={skills} remove={removeSkill} loadingText="No Skills Selected"  />
+          <Select onValueChange={(val)=>addSkill(val)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Skills" />
+            </SelectTrigger>
+            <SelectContent>
+              {AllSkills.map((skill) => (
+                <SelectItem key={skill} value={skill}>
+                  {skill}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
           <div className="w-[300px] border py-5 px-3 rounded-md gap-4 text-xs flex flex-col">
             <div className="w-full">
               <p className="text-md font-bold">Experience</p>

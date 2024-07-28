@@ -6,7 +6,21 @@ import { useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { AlignCenter } from "lucide-react";
+import {
+  AlignCenter,
+  CalendarIcon,
+  HandHelpingIcon,
+  HomeIcon,
+  LayoutGridIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "lucide-react";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const Sidebar = () => {
   const { user } = useUser();
