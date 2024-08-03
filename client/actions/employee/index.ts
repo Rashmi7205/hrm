@@ -1,5 +1,5 @@
-'use server';
-import { NewEmpType } from "@/types";
+
+import { BankInfo, Document, EmpExperience, EmpInfo, NewEmpType, PersonalInfo, SalaryInfo } from "@/types";
 import axios from "axios";
 
 const apiUrl = process.env.NEXT_PUBLIC_SERVER_API_URL!;
@@ -83,3 +83,34 @@ export const getAllEmployeeName = async ()=>{
       return err;
     } 
 }
+export const updateEmployee = async ({
+  empId,
+  personalInfo,
+  empInfo,
+  salaryInfo,
+  bankInfo,
+  experienceInfo,
+  documentInfo,
+  image
+}:{
+  empId: string,
+  personalInfo:PersonalInfo,empInfo:EmpInfo,salaryInfo:SalaryInfo,bankInfo:BankInfo,experienceInfo:EmpExperience[],documentInfo:Document[],image:File|null
+})=>{ 
+  try {
+    console.log("jjj");
+      const res = await axios.post(`${apiUrl}/emp/update/${empId}`,{
+        personalInfo,
+        empInfo,
+        salaryInfo,
+        bankInfo,
+        experienceInfo,
+        documentInfo,
+        image
+      });
+      return res.data;
+  } catch (error) {
+      console.log(error);
+      return false;
+  }
+}
+

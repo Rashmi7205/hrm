@@ -1,300 +1,658 @@
 "use client";
-
-import { getEmpById } from "@/actions/employee";
-import BadgeContainer from "@/app/components/BadgeContainer";
-import EditExperienceModal from "@/app/components/EditExperienceModal";
-import EmpDetailsCard from "@/app/components/EmpDetailsCard";
-import Loader from "@/app/components/Loader";
-import { AllSkills } from "@/app/constants/constanst";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getFormattedTime } from "@/helpers";
-import { ExpDataType, LabelType } from "@/types";
-import { Calendar, Edit, Mail, MapPin, PhoneCall, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { ChangeEvent, useEffect, useState } from "react";
+import {
+  BankInfo,
+  Document,
+  EmpExperience,
+  EmpInfo,
+  PersonalInfo,
+  SalaryInfo,
+} from "@/types";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { getEmpById, updateEmployee } from "@/actions/employee";
+import Loader from "@/app/components/Loader";
+import { AllSkills, departments, positions } from "@/app/constants/constanst";
+import Image from "next/image";
+import BadgeContainer from "@/app/components/BadgeContainer";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon, File, Icon, Save, Trash } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import DocumentAttachBtn from "@/app/components/Employee/DocumentAttachBtn";
+import { toast } from "sonner";
 
-const page = () => {
+export default function Component() {
   const { id }: { id: string } = useParams();
-  const [empData, setEmpData] = useState();
-  const [bankInfoLabels, setBankInfoLabels] = useState<LabelType[]>([]);
-  const [personalInfoLabels, setPersonalInfoLabels] = useState<LabelType[]>([]);
-  const [salaryLabels, setSalaryLabels] = useState<LabelType[]>([]);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [experience, setExperience] = useState<ExpDataType[]>([]);
-  const [skills, setSkills] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [image, setImage] = useState<File | null >(null);
+  const [empInfo, setEmpInfo] = useState<EmpInfo>({
+    fullname: "",
+    position: "",
+    dept: "",
+    doj: "",
+    phone: "",
+    email: "",
+    skills: [],
+    maritalStatus: "",
+    profile_pic:"#"
+  });
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
+    passNo: "",
+    passExpDate: new Date(),
+    dob: new Date(),
+  });
 
-  const handleEdit = () => {
-    setIsSheetOpen(true);
+  const [bankInfo, setBankInfo] = useState<BankInfo>({
+    accountNumber: "",
+    bankName: "",
+    panNo: "",
+    ifscCode: "",
+  });
+
+  const [salaryInfo, setSalaryInfo] = useState<SalaryInfo>({
+    pay_period: "",
+    pay_status: "",
+    pay_rate: 0,
+  });
+  const [experienceInfo, setExperienceInfo] = useState<EmpExperience[]>([]);
+  const [documentInfo,setDocumentInfo] = useState<Document[]>([]);
+
+  const addSkill = (newSkill: string) => {
+    if (!empInfo.skills.includes(newSkill)) {
+      setEmpInfo({ ...empInfo, skills: [...empInfo.skills, newSkill] });
+    }
   };
 
-  const handleSave = (updatedExperience: ExpDataType[]) => {
-    setExperience(updatedExperience);
+  const removeSkill = (skillToRemove: string) => {
+    const updatedSkills = empInfo.skills.filter(
+      (skill) => skill !== skillToRemove
+    );
+    setEmpInfo({ ...empInfo, skills: updatedSkills });
   };
 
-  const getData = async () => {
+  const empDetails = async () => {
     try {
+      setIsLoading(true);
       const data = await getEmpById(id);
-      setEmpData(data);
-      setExperience(data.experience);
-      //add bankinfo labels
-      const bankinfo = data.bankinfo;
-      setBankInfoLabels([
-        {
-          label: "Bank Name",
-          value: bankinfo.name_of_bank,
-          name: "name_of_bank",
-        },
-        {
-          label: "Account Number",
-          value: bankinfo.account_number,
-          name: "account_number",
-        },
-        {
-          label: "IFSC Code",
-          value: bankinfo.ifsc_no,
-          name: "ifsc_no",
-        },
-        {
-          label: "Pan No",
-          value: bankinfo.pan_no,
-          name: "pan_no",
-        },
-      ]);
-      //add personal info labels
-      setPersonalInfoLabels([
-        {
-          label: "Passport No.",
-          value: data.passport_no,
-          name: "passport_no",
-        },
-        {
-          label: "Passport Exp Date",
-          value: getFormattedTime(data.passport_exp_date),
-          name: "passport_exp_date",
-        },
-        {
-          label: "Phone Number",
-          value: data.phone_number,
-          name: "phone_number",
-        },
-        {
-          label: "Marital Status",
-          value: data.marital_status,
-          name: "marital_status",
-        },
-      ]);
-      //add salay info lebels
-      const salaryinfo = data.salary_info;
-      setSalaryLabels([
-        {
-          label: "Pay Basis",
-          value: salaryinfo.pay_period,
-          name: "pay_period",
-        },
-        {
-          label: "Pay Rate",
-          value: salaryinfo.pay_rate,
-          name: "pay_rate",
-        },
-        {
-          label: "Status",
-          value: salaryinfo.status,
-          name: "status",
-        },
-      ]);
-      setSkills(data?.skill);
-      
+      setEmpInfo({
+        fullname: data.name,
+        position: data.position,
+        dept: data.dept_name,
+        doj: data.doj,
+        phone: data.phone_number,
+        email: data.email,
+        skills: data.skill,
+        maritalStatus: data.marital_status,
+        profile_pic:data?.profile_pic,
+      });
+     
+      setPersonalInfo({
+        dob:data.dob,
+        passExpDate:data.passport_exp_date,
+        passNo:data.passport_no
+      })
+
+      const { bankinfo, salary_info } = data;
+      setBankInfo({
+        accountNumber: bankinfo.account_number,
+        bankName: bankinfo.name_of_bank,
+        panNo: bankinfo.pan_no,
+        ifscCode: bankinfo.ifsc_no,
+      });
+      setSalaryInfo({
+        pay_period: salary_info.pay_period,
+        pay_status: salary_info.status,
+        pay_rate: salary_info.pay_rate,
+      });
+      setExperienceInfo(data.experience);
+      setDocumentInfo(data.documents);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleEditEmpInfo = ({
+  const updateExperienceDate = ({
+    index,
+    date,
     key,
-    value,
-    type,
   }: {
+    index: number;
+    date: Date;
     key: string;
-    value: string;
-    type?: string;
   }) => {
-    if (type === "personal_info") {
-      //@ts-ignore
-      setEmpData({ ...empData, [key]: value });
-      setPersonalInfoLabels((prevLabels) =>
-        prevLabels.map((item) =>
-          item.name === key ? { ...item, value: value } : item
-        )
-      );
-    }
-    if (type === "salary_info") {
-      //@ts-ignore
-      setEmpData({...empData,salary_info:{...empData.salary_info,
-          [key]: value
-        }
-      });
-      setSalaryLabels((prevLabels) =>
-        prevLabels.map((item) =>
-          item.name === key ? { ...item, value: value } : item
-        )
-      );
-    }
-    if (type == "bank_info") {
-      //@ts-ignore
-      setEmpData({...empData,bankinfo: {...empData?.bankinfo,
-          [key]: value,
-        },
-      });
-      setBankInfoLabels((prevLabels) =>
-        prevLabels.map((item) =>
-          item.name === key ? { ...item, value: value } : item
-        )
-      );
-    }
-  
+    const exp = experienceInfo[index];
+    const updatedExp = { ...exp, [key]: date };
+    setExperienceInfo([
+      ...experienceInfo.slice(0, index),
+      updatedExp,
+      ...experienceInfo.slice(index + 1),
+    ]);
   };
+  const handleExperienceInfoChange = (e,index:number)=>{
+    const { name, value } = e.target;
+    const newExperienceInfo = [...experienceInfo];
+    newExperienceInfo[index] = {
+      ...newExperienceInfo[index],
+      [name]: value,
+    };
+    setExperienceInfo(newExperienceInfo);
+  }
 
-  const addSkill = (newSkill: string) => {
-    if (!skills.includes(newSkill)) {
-      setSkills([...skills, newSkill]);
+  const handleImageChange = (e:any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader?.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
-
-  const removeSkill = (skillToRemove: string) => {
-    const updatedSkills = skills.filter((skill) => skill !== skillToRemove);
-    setSkills(updatedSkills);
-  };
-
-  const updateEmpData = async ()=>{
-      console.log(empData);
-      console.log(experience);
-      console.log(skills);
-
+  const handleEmpInfoChange = (e)=>{
+    const { name, value } = e.target;
+    setEmpInfo({...empInfo,[e.name]:e.value});
+  }
+  const handleSalaryInfoChange = (e)=>{
+    const {name,value} = e.target;
+    setSalaryInfo({...salaryInfo,[name]:value});
+  }
+  const handleBankInfoChange = (e)=>{
+    const {name,value} = e.target;
+    setBankInfo({...bankInfo,[name]:value});
+    
+  }
+  const uploadDocument = (e:any,name:string)=>{
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDocumentInfo([
+          ...documentInfo,
+          {
+            document_name:name,
+            document_url:URL.createObjectURL(file),
+            document_file:reader?.result
+          }
+        ]);
+      };
+      reader.readAsDataURL(file);
+     
+    }
+  }
+  const removeDocument= (index:number)=>{
+    setDocumentInfo([
+      ...documentInfo.slice(0, index),
+      ...documentInfo.slice(index + 1),
+    ]);
+  }
+  const updateEmployeeDetails = async ()=>{
+    setIsLoading(true);  
+    const r = await updateEmployee({empId:id,personalInfo,empInfo,salaryInfo,bankInfo,experienceInfo,documentInfo,image});
+    setIsLoading(false);
+    console.log(r);
+    toast("Updated Successfully");
   }
 
 
-  useEffect(() => {
-    getData();
-  }, [setBankInfoLabels, setPersonalInfoLabels, setSalaryLabels]);
-  return (
-    <main className="w-full flex items-center justify-center overflow-x-hidden">
-      {empData ? (
-        <div className="w-full flex items-start justify-start flex-wrap gap-y-4">
-           <button
-      onClick={updateEmpData}
-      >
-        Save
-      </button>
-          <div className="w-[300px] border py-5 px-3 rounded-md gap-4 text-xs flex flex-col">
-            <div className="w-full flex gap-3 items-center justify-between">
-              <User
-                size={70}
-                className="bg-slate-600 text-white p-1 rounded-full"
-              />
-              <div className="flex flex-col gap-2">
-                <p className="text-pretty font-bold tracking-wider">
-                  {empData['name']}
-                </p>
-                <p className="text-center bg-yellow-400 font-medium text-xs rounded-lg p-1">
-                  {empData['position']}
-                </p>
-              </div>
-            </div>
-            <div className="w-full flex gap-3 items-center justify-between">
-              <div className="flex flex-col gap-0.5">
-                <p className="text-slate-500">Department</p>
-                <p className="font-semibold">{empData["dept_name"]}</p>
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <p className="text-slate-500">Date Of Joining</p>
-                <p className="font-semibold">
-                  {empData["date_of_joining"]
-                    ?getFormattedTime(empData['date_of_joining'])
-                    : ""}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col  gap-1 border dark:bg-slate-900 p-3 rounded-md w-full bg-slate-300">
-              <span className="text-sm flex gap-1 items-center border-b p-1">
-                <Mail size={14} />
-                {empData["email"]}
-              </span>
-              <span className="text-sm flex gap-1 items-center">
-                <PhoneCall size={14} />
-                {empData["phone_number"]}
-              </span>
-            </div>
-          </div>
-          {personalInfoLabels && (
-            <EmpDetailsCard
-              list={personalInfoLabels}
-              title="Personal Info"
-              updateHandler={handleEditEmpInfo}
-            />
-          )}
-          {bankInfoLabels && (
-            <EmpDetailsCard list={bankInfoLabels} title="Bank Details" updateHandler={handleEditEmpInfo} />
-          )}
-          {salaryLabels && (
-            <EmpDetailsCard list={salaryLabels} title="Salary Details"  updateHandler={handleEditEmpInfo}/>
-          )}
-            <div className="w-[300px] p-5 flex flex-col items-start justify-between lg:w-[49%] sm:w-full border rounded-lg mx-2">
-          <h1>Add Skills</h1>
-          <BadgeContainer list={skills} remove={removeSkill} loadingText="No Skills Selected"  />
-          <Select onValueChange={(val)=>addSkill(val)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Skills" />
-            </SelectTrigger>
-            <SelectContent>
-              {AllSkills.map((skill) => (
-                <SelectItem key={skill} value={skill}>
-                  {skill}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-          <div className="w-[300px] border py-5 px-3 rounded-md gap-4 text-xs flex flex-col">
-            <div className="w-full">
-              <p className="text-md font-bold">Experience</p>
-              <button
-                onClick={handleEdit}
-                className="flex items-center justify-around border rounded-full p-1"
-              >
-                <Edit size={10} /> Edit
-              </button>
-            </div>
-            {experience.map((exp) => (
-              <div className="w-full flex-col ">
-                <div className="flex items-center justify-between w-full my-2">
-                  <p className="font-bold text-md">{exp["designation"]}</p>
-                  <p className="text-slate-300">{exp["company_name"]}</p>
-                </div>
-                <div className="flex items-center justify-between w-full text-[14px] my-2">
-                  <p className="text-slate-300 flex">
-                    <Calendar size={14} /> {getFormattedTime(exp["from"])} -{" "}
-                    <Calendar size={14} /> {getFormattedTime(exp["to"])}
-                  </p>
-                  <p className="text-slate-300 flex">
-                    <MapPin size={14} /> {exp["location"]}
-                  </p>
-                </div>
-                <div>{exp["desc"]}</div>
-              </div>
-            ))}
-          </div>
-          <EditExperienceModal
-            isOpen={isSheetOpen}
-            onClose={() => setIsSheetOpen(false)}
-            experience={experience}
-            onSave={handleSave}
-          />
-        </div>
-      ) : (
-        <Loader />
-      )}
-    </main>
-  );
-};
 
-export default page;
+
+  useEffect(() => {
+    empDetails();
+  }, []);
+
+  return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-col gap-6 p-6 sm:p-8 md:p-10">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">
+              Employee Details - {empInfo.fullname}{" "}
+            </h1>
+            <Button 
+            onClick={updateEmployeeDetails}
+            className="flex items-center gap-2 bg-blue-2 text-hite">
+              <Save/> Save
+            </Button>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle>Personal Information</CardTitle>
+                <CardDescription>
+                  Update employee's personal details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="w-[100px] h-[100px] rounded-md text-center relative">
+                      <img
+                        src={image || empInfo.profile_pic}
+                        alt="Avatar"
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                      {!image && !empInfo.profile_pic && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 rounded-md">
+                          {empInfo.fullname}
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="mt-2"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fullname">Full Name</Label>
+                    <Input id="fullname" defaultValue={empInfo.fullname} onChange={handleEmpInfoChange}/>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      defaultValue={empInfo.email}
+                      onChange={handleEmpInfoChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input id="phone" defaultValue={empInfo.phone} 
+                    onChange={handleEmpInfoChange}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="department">Department</Label>
+                    <Select name="department" defaultValue={empInfo.dept} onValueChange={(val)=>{
+                      setEmpInfo({
+                        ...empInfo,
+                        dept:val
+                      })
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {departments.map((department, index) => (
+                          <SelectItem key={index} value={department}>
+                            {department}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="position">Position</Label>
+                    <Select name="position" defaultValue={empInfo.position} onValueChange={(val)=>{
+                      setEmpInfo({
+                        ...empInfo,
+                        position:val
+                      })
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={empInfo.position} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {positions.map((position, index) => (
+                          <SelectItem key={index} value={position}>
+                            {position}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="maritalStatus">Marital Status</Label>
+                    <Select
+                      name="maritalStatus"
+                      defaultValue={empInfo.maritalStatus}
+                      onValueChange={(val)=>{
+                        setEmpInfo({
+                        ...empInfo,
+                        maritalStatus:val
+                        })
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={empInfo.maritalStatus} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Single">Single</SelectItem>
+                        <SelectItem value="Married">Married</SelectItem>
+                        <SelectItem value="Divorced">Divorced</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-3 flex flex-col">
+                    <Label htmlFor="dob">D.O.B</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "md:w-[280px] lg:w-[180px]  w-full justify-start text-left font-normal",
+                            !personalInfo.dob && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {personalInfo.dob ? (
+                            format(personalInfo.dob, "PPP")
+                          ) : (
+                            <span>Pick a Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={personalInfo.dob}
+                          onSelect={(date) => {
+                              setPersonalInfo({
+                                ...personalInfo,
+                                dob: date
+                              })
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Bank Information</CardTitle>
+                <CardDescription>
+                  Update employee's bank details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="bankName">Bank Name</Label>
+                    <Input name="bankName" defaultValue={bankInfo.bankName} onChange={handleBankInfoChange}/>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="accountNumber">Account Number</Label>
+                    <Input
+                      name="accountNumber"
+                      defaultValue={bankInfo.accountNumber}
+                      onChange={handleBankInfoChange}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="ifscCode">IFSC Code</Label>
+                    <Input name="ifscCode" defaultValue={bankInfo.ifscCode} 
+                    onChange={handleBankInfoChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="panNo">Pan Number</Label>
+                    <Input name="panNo" defaultValue={bankInfo.panNo} 
+                    onChange={handleBankInfoChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="passNo">PassPort Number</Label>
+                    <Input name="passNo" defaultValue={personalInfo.passNo} 
+                    onChange={(e)=>{
+                      setPersonalInfo({...personalInfo,passNo:e.target.value})
+                    }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="panNo">Passport Expiry</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "md:w-[180px]  w-full justify-start text-left font-normal",
+                            !personalInfo.passExpDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {personalInfo.passExpDate ? (
+                            format(personalInfo.passExpDate, "PPP")
+                          ) : (
+                            <span>Pick a Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={personalInfo.passExpDate}
+                          onSelect={(date) => {
+                              setPersonalInfo({
+                                ...personalInfo,
+                                passExpDate: date
+                              })
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Skills</CardTitle>
+                <CardDescription>Update Employee Skills</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <BadgeContainer list={empInfo.skills} remove={removeSkill} />
+                <Select onValueChange={(val) => addSkill(val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Skills" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {AllSkills.map((skill) => (
+                      <SelectItem key={skill} value={skill}>
+                        {skill}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Salary Details</CardTitle>
+                <CardDescription>
+                  Update employee's salary details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="pay_rate">Pay Rate</Label>
+                    <Input name="pay_rate" defaultValue={salaryInfo.pay_rate}
+                    onChange={handleSalaryInfoChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pay_period">Payment Frequency</Label>
+                    <Select
+                      name="pay_period"
+                      defaultValue={salaryInfo.pay_period}
+                      onValueChange={(val)=>{
+                        setSalaryInfo({
+                          ...salaryInfo,
+                          pay_period: val
+                        })
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select payment frequency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Hourly">Hourly</SelectItem>
+                        <SelectItem value="Monthly">Monthly</SelectItem>
+                        <SelectItem value="Anually">Anually</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="status">Status</Label>
+                    <Input name="status" defaultValue={salaryInfo.pay_status} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>Documents</CardTitle>
+                <CardDescription>Update employee's documents</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                {
+                  documentInfo &&
+                  documentInfo.map((document, index) => (
+                    <div className="flex gap-4 items-center" key={index}>
+                      <File/>
+                      <Label htmlFor="document_name">{document.document_name}</Label>
+                      <Button onClick={()=>removeDocument(index)}>
+                        <Trash size={10} className="text-red-600"/>
+                      </Button>
+                    </div>
+                  ))
+                }
+               <DocumentAttachBtn uploadDocument={uploadDocument}/>
+              </CardContent>
+            </Card>
+          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Previous Experience</CardTitle>
+              <CardDescription>Update Employee Experience</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+              {experienceInfo.map((experience, index) => (
+                <div
+                  key={experience._id}
+                  className="grid grid-cols-1 gap-4 border rounded-md my-3 p-4"
+                >
+                  <div className="space-y-2">
+                    <Label htmlFor="company_name">Company Name</Label>
+                    <Input
+                      name="company_name"
+                      defaultValue={experience.company_name}
+                      onChange={(e)=>handleExperienceInfoChange(e,index)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="desc">Roles and Responsibilities</Label>
+                    <Textarea name="desc" defaultValue={experience.desc} 
+                     onChange={(e)=>handleExperienceInfoChange(e,index)}
+                    />
+                  </div>
+                  <Label htmlFor="Period">Duration</Label>
+                  <div className="flex flex-wrap  gap-2 items-center justify-between">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "md:w-[180px]  w-full justify-start text-left font-normal",
+                            !experience.from && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {experience.from ? (
+                            format(experience.from, "PPP")
+                          ) : (
+                            <span>Pick a Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={experience.from}
+                          onSelect={(date) => {
+                            updateExperienceDate({ index, date, key: "from" });
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "md:w-[180px] w-full justify-start text-left font-normal",
+                            !experience.to && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {experience.to ? (
+                            format(experience.to, "PPP")
+                          ) : (
+                            <span>Pick a Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={experience.to}
+                          onSelect={(date) => {
+                            updateExperienceDate({ index, date, key: "to" });
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </>
+  );
+}

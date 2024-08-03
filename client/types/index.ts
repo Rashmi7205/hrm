@@ -8,8 +8,6 @@ export enum ApplicationStatus {
 
 // Define interfaces for the nested objects
 export interface PreviousExperience {
-  // Add properties as needed
-  // For example:
   companyName?: string;
   position?: string;
   duration?: string;
@@ -95,13 +93,13 @@ export type Job = {
 };
 export interface UserInfo {
   firstName: string | null;
-  lastName: string |null;
-  email:string | null;
+  lastName: string | null;
+  email: string | null;
   username: string | null;
-  clerk_id: string|null;
-  imageUrl:string|null;
-  fullName: string|null;
-  lastSignInAt: Date|null;
+  clerk_id: string | null;
+  imageUrl: string | null;
+  fullName: string | null;
+  lastSignInAt: Date | null;
 }
 
 export interface ExpDataType {
@@ -113,80 +111,81 @@ export interface ExpDataType {
   desc: string;
 }
 
-export interface NewApplicant{
-  name:string,
-  email:string,
-  job_id:string,
-  phone: string,
-  experience: string,
-  otherInfo:string,
-  resume:File,
-  skills:[String],
-  linkedinLink:string,
-  githubLink:string,
+export interface NewApplicant {
+  name: string;
+  email: string;
+  job_id: string;
+  phone: string;
+  experience: string;
+  otherInfo: string;
+  resume: File;
+  skills: [String];
+  linkedinLink: string;
+  githubLink: string;
   educations: [
     {
-      instituteName: string,
+      instituteName: string;
       period: {
-        from: null | Date,
-        to: null | Date,
-      },
-      course: string,
-      courseType: string,
-      universityName: string,
-    },
-  ],
- 
+        from: null | Date;
+        to: null | Date;
+      };
+      course: string;
+      courseType: string;
+      universityName: string;
+    }
+  ];
 }
 
-export interface EmployeeData{
-    _id: string;
-    name: string;
-    position: string;
-    dept_name: string;
-    date_of_joining: Date,
-    phone_number: string;
-    email:string;
+export interface EmployeeData {
+  _id: string;
+  name: string;
+  position: string;
+  dept_name: string;
+  date_of_joining: Date;
+  phone_number: string;
+  email: string;
 }
 
-export interface NewEmpType{
-  fullname: string,
-  position: string,
-  dept: string,
-  phone: string,
-  email: string,
-  passNo: string,
-  maritalStatus: string,
-  accNo: string,
-  bankName: string,
-  panNo: string,
-  ifscCode: string,
-  doj:Date |undefined, 
-  dob:Date | undefined,
-  passExpDate:Date,
-  skills:string[],
+export interface NewEmpType {
+  fullname: string;
+  position: string;
+  dept: string;
+  phone: string;
+  email: string;
+  passNo: string;
+  maritalStatus: string;
+  accNo: string;
+  bankName: string;
+  panNo: string;
+  ifscCode: string;
+  doj: Date | undefined;
+  dob: Date | undefined;
+  passExpDate: Date;
+  skills: string[];
   experience: [
-    {company_name: string;
-  designation: string;
-  location:string;
-  from: Date;
-  to: Date;
-  desc: string;}
-  ]
+    {
+      company_name: string;
+      designation: string;
+      location: string;
+      from: Date;
+      to: Date;
+      desc: string;
+    }
+  ];
 }
 export interface LabelType {
   label: string;
-  value:string;
-  name?:string;
+  value: string;
+  name?: string;
 }
-export interface Payroll{
-    emp_id?:string,
-    pay_period:string,
-    pay_rate:string,
-    status?:string,
-    emp_name?:string,
-    emp_email?:string,
-    emp_position?:string
+export interface Payroll {
+  emp_id?: string;
+  pay_period: string;
+  pay_rate: string;
+  status?: string;
+  emp_name?: string;
+  emp_email?: string;
+  emp_position?: string;
 }
 
 // canbab Board Types
@@ -194,4 +193,48 @@ export type Id = number;
 export type Column = {
   id: Id;
   title: string;
+};
+
+export interface EmpInfo {
+  fullname: string;
+  position: string;
+  dept: string;
+  doj: string;
+  phone: string;
+  email: string;
+  skills: string[];
+  maritalStatus: string;
+  profile_pic?:string;
+}
+
+export interface PersonalInfo {
+  passNo: string;
+  passExpDate: Date;
+  dob: Date;
+}
+
+export interface BankInfo {
+  accountNumber: string;
+  bankName: string;
+  panNo: string;
+  ifscCode: string;
+}
+
+export interface SalaryInfo {
+  pay_period: string;
+  pay_status: string;
+  pay_rate: number;
+}
+export interface EmpExperience {
+  company_name: string;
+  desc?: string;
+  designation: string;
+  from: Date | undefined;
+  to: Date | undefined;
+  _id: string;
+}
+export interface Document {
+  document_name:string;
+  document_url:string;
+  document_file?:string | ArrayBuffer | null;
 }

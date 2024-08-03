@@ -37,9 +37,8 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={inter.className}>
+        <body className={`${inter.className} dark:bg-dark-2 bg-light-2 dark:text-light-1 text-[#202224]`}>
           <ThemeProvider
-            
             attribute="class"
             defaultTheme="system"
             enableSystem

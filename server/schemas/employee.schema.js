@@ -10,7 +10,14 @@ const EmployeeSchema = new Schema({
     passport_no: { type: String },
     passport_exp_date: { type: Date,},
     dob: { type: Date, required: true },
-    documents: { type: [String], },
+    profile_pic:{type:String},
+    documents: { type: [
+      {
+        document_name:String,
+        document_url:String,
+        document_file:String,
+      }
+    ], },
     status:{type:String,default:"active"},
     skills:{type:[String]},
     marital_status:{type:String},

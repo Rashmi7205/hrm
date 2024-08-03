@@ -6,9 +6,9 @@ import Navbar1 from "../components/Navbar1";
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
     return(
-    <main className="flex min-h-screen w-full justify-between">  
+    <main className="flex min-h-screen w-full justify-between ">  
         <Sidebar1/>
-        <div className="lg:w-[90%] w-full absolute inset-y-0 right-7">
+        <div className="lg:w-[94%] md:w-[90%] w-full absolute inset-y-0 md:right-7">
             <Navbar1/>
         {
             children

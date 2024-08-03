@@ -5,6 +5,11 @@ export const sideBarLinks = [
         icon:'/icons/dashboard.svg'
     },
     {
+        name: 'Analytics',
+        link: '/analytics',
+        icon:'/icons/analytics.svg'
+    },
+    {
         name: 'Vacancies',
         link: '/vacancies',
         icon:'/icons/vacancies.svg'
@@ -12,12 +17,12 @@ export const sideBarLinks = [
     {
         name: 'Applicants',
         link: '/applicants',
-        icon:'/icons/user.svg'
+        icon:'/icons/vacancies.svg'
     },
     {
         name: 'Employees',
         link: '/employees',
-        icon:'/icons/employee.svg'
+        icon:'/icons/user.svg'
     },
     {
         name: 'Payroll',
